@@ -5,14 +5,13 @@ import org.chess.core.Pieces.Piece;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class GameBoard {
 
     private static byte[][] activeBoard = new byte[8][8];
 
-    private static final List<int[]> history = new ArrayList<>();
+    private static List<int[]> history = new ArrayList<>();
 
     private static boolean[][] pseudoLegalMoves = new boolean[8][8];
 
@@ -22,6 +21,7 @@ public class GameBoard {
     private static Integer selectedCol;
 
     private static Turn turn;
+
     private static Playing playing;
 
     private static int[] enPassant = new int[4];
@@ -66,7 +66,7 @@ public class GameBoard {
         SSEController.refreshPage();
     }
 
-    public static void resetBoard() {
+    private static void resetBoard() {
         activeBoard = new byte[8][8];
     }
 
@@ -93,14 +93,14 @@ public class GameBoard {
                     resetSelection();
                     resetPseudoLegalMoves();
                 } else {
-                    makeMove(selectedRow, selectedCol, row, col);
+                    tryMove(selectedRow, selectedCol, row, col);
                 }
 
             }
         }
     }
 
-    public static void resetPseudoLegalMoves(){
+    private static void resetPseudoLegalMoves() {
         pseudoLegalMoves = new boolean[8][8];
     }
 
@@ -108,15 +108,14 @@ public class GameBoard {
         return pseudoLegalMoves;
     }
 
-    public static void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
+    private static void tryMove(int fromRow, int fromCol, int toRow, int toCol) {
         if (((activeBoard[fromRow][fromCol] < 0 && activeBoard[toRow][toCol] >= 0) || (activeBoard[fromRow][fromCol] > 0 && activeBoard[toRow][toCol] <= 0))
                 && pseudoLegalMoves[toRow][toCol]) {
             history.add(new int[]{fromRow, fromCol, toRow, toCol});
-            byte piece = activeBoard[fromRow][fromCol];
-            activeBoard[fromRow][fromCol] = 0;
-            activeBoard[toRow][toCol] = piece;
+            movePiece(fromRow, fromCol, toRow, toCol);
             resetSelection();
-            checkForEnPassant();
+            tryForEnPassant();
+            tryForCastling();
             if (turn == Turn.WHITE) {
                 turn = Turn.BLACK;
             } else if (turn == Turn.BLACK) {
@@ -126,7 +125,13 @@ public class GameBoard {
         }
     }
 
-    public static void resetSelection(){
+    private static void movePiece(int fromRow, int fromCol, int toRow, int toCol){
+        byte piece = activeBoard[fromRow][fromCol];
+        activeBoard[fromRow][fromCol] = 0;
+        activeBoard[toRow][toCol] = piece;
+    }
+
+    private static void resetSelection() {
         selectedRow = null;
         selectedCol = null;
     }
@@ -139,10 +144,45 @@ public class GameBoard {
         return history;
     }
 
-    public static void checkForEnPassant(){
-        if (Arrays.equals(history.get(history.size() - 1), enPassant)){
+    private static void tryForEnPassant() {
+        if (Arrays.equals(history.get(history.size() - 1), enPassant)) {
             activeBoard[enPassant[0]][enPassant[3]] = 0;
         }
+    }
+
+    private static void tryForCastling() {
+
+        int[] lastMove = history.get(history.size() - 1);
+        int[] CastlingLowerShort = {7, 4, 7, 6};
+        int[] CastlingUpperShort = {0, 4, 0, 6};
+        int[] CastlingLowerLong = {7, 4, 7, 2};
+        int[] CastlingUpperLong = {0, 4, 0, 2};
+
+        if (Arrays.equals(lastMove, CastlingLowerShort)) {
+            movePiece(7, 7, 7, 5);
+        }
+
+        if (Arrays.equals(lastMove, CastlingUpperShort)) {
+            movePiece(0, 7, 0, 5);
+        }
+
+        if (Arrays.equals(lastMove, CastlingLowerLong)) {
+            movePiece(7, 0, 7, 3);
+        }
+
+        if (Arrays.equals(lastMove, CastlingUpperLong)) {
+            movePiece(0, 0, 0, 3);
+        }
+
+    }
+
+    public static void resetGame(){
+        GameBoard.resetBoard();
+        GameBoard.resetPlayingColor();
+        GameBoard.setGameStarted(false);
+        GameBoard.resetHistory();
+        GameBoard.resetPseudoLegalMoves();
+        GameBoard.resetSelection();
     }
 
     public static Integer getSelectedRow() {
@@ -171,6 +211,10 @@ public class GameBoard {
 
     public static void resetPlayingColor() {
         playing = null;
+    }
+
+    public static void resetHistory() {
+        history = new ArrayList<>();
     }
 
     public static boolean isGameStarted() {

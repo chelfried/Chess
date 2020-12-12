@@ -2,6 +2,8 @@ package org.chess.core.Pieces;
 
 import org.chess.core.GameBoard;
 
+import java.util.List;
+
 public class Piece {
 
     public static boolean[][] calcPseudo(int row, int col) {
@@ -136,6 +138,19 @@ public class Piece {
         }
 
         return pseudoLegalMoves;
+    }
+
+    public static boolean checkForPastMove(int row, int col){
+
+        List<int[]> history = GameBoard.getHistory();
+
+        for (int i = 0; i < history.size(); i++){
+            if (history.get(i)[0] == row && history.get(i)[1] == col){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

@@ -14,12 +14,8 @@ public class MainController {
     }
 
     @PostMapping("/reset")
-    public ModelAndView restartGame() {
-        GameBoard.resetBoard();
-        GameBoard.resetPlayingColor();
-        GameBoard.setGameStarted(false);
-        GameBoard.resetPseudoLegalMoves();
-        GameBoard.resetSelection();
+    public ModelAndView resetGame() {
+        GameBoard.resetGame();
         SSEController.refreshPage();
         return new ModelAndView("redirect:/");
     }
