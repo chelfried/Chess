@@ -1,10 +1,8 @@
 package org.chess.core.Pieces;
 
-import org.chess.core.GameBoard;
+public class Rook extends Piece{
 
-public class Rook {
-
-    public static boolean[][] calcPseudo(int row, int col) {
-        return Piece.calcCross(row, col);
+    public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
+        return calcCross(board, row, col);
     }
 }

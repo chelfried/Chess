@@ -13,7 +13,7 @@ public class GameBoard {
 
     private static List<int[]> history = new ArrayList<>();
 
-    private static boolean[][] pseudoLegalMoves = new boolean[8][8];
+    private static boolean[][] legalMoves = new boolean[8][8];
 
     private static boolean gameStarted;
 
@@ -81,17 +81,17 @@ public class GameBoard {
                     if (turn == Turn.WHITE && activeBoard[row][col] > 0) {
                         selectedRow = row;
                         selectedCol = col;
-                        Piece.calcPseudo(row, col);
+                        legalMoves = Piece.calcLegal(row, col);
                     } else if (turn == Turn.BLACK && activeBoard[row][col] < 0) {
                         selectedRow = row;
                         selectedCol = col;
-                        Piece.calcPseudo(row, col);
+                        legalMoves = Piece.calcLegal(row, col);
                     }
                 }
             } else if (selectedRow != null && selectedCol != null) {
                 if (selectedRow == row && selectedCol == col) {
                     resetSelection();
-                    resetPseudoLegalMoves();
+                    resetLegalMoves();
                 } else {
                     tryMove(selectedRow, selectedCol, row, col);
                 }
@@ -100,35 +100,35 @@ public class GameBoard {
         }
     }
 
-    private static void resetPseudoLegalMoves() {
-        pseudoLegalMoves = new boolean[8][8];
+    private static void resetLegalMoves() {
+        legalMoves = new boolean[8][8];
     }
 
-    public static boolean[][] getPseudoLegalMoves() {
-        return pseudoLegalMoves;
+    public static boolean[][] getLegalMoves() {
+        return legalMoves;
     }
 
     private static void tryMove(int fromRow, int fromCol, int toRow, int toCol) {
         if (((activeBoard[fromRow][fromCol] < 0 && activeBoard[toRow][toCol] >= 0) || (activeBoard[fromRow][fromCol] > 0 && activeBoard[toRow][toCol] <= 0))
-                && pseudoLegalMoves[toRow][toCol]) {
-            history.add(new int[]{fromRow, fromCol, toRow, toCol});
-            movePiece(fromRow, fromCol, toRow, toCol);
+                && legalMoves[toRow][toCol]) {
+            movePiece(activeBoard, fromRow, fromCol, toRow, toCol);
             resetSelection();
-            tryForEnPassant();
-            tryForCastling();
             if (turn == Turn.WHITE) {
                 turn = Turn.BLACK;
             } else if (turn == Turn.BLACK) {
                 turn = Turn.WHITE;
             }
-            resetPseudoLegalMoves();
+            resetLegalMoves();
         }
     }
 
-    private static void movePiece(int fromRow, int fromCol, int toRow, int toCol){
-        byte piece = activeBoard[fromRow][fromCol];
-        activeBoard[fromRow][fromCol] = 0;
-        activeBoard[toRow][toCol] = piece;
+    public static void movePiece(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
+        byte piece = board[fromRow][fromCol];
+        board[fromRow][fromCol] = 0;
+        board[toRow][toCol] = piece;
+        history.add(new int[]{fromRow, fromCol, toRow, toCol});
+        tryForEnPassant(board);
+        tryForCastling(board);
     }
 
     private static void resetSelection() {
@@ -144,13 +144,13 @@ public class GameBoard {
         return history;
     }
 
-    private static void tryForEnPassant() {
-        if (Arrays.equals(history.get(history.size() - 1), enPassant)) {
-            activeBoard[enPassant[0]][enPassant[3]] = 0;
+    private static void tryForEnPassant(byte[][] board) {
+        if (history == null || Arrays.equals(history.get(history.size() - 1), enPassant)) {
+            board[enPassant[0]][enPassant[3]] = 0;
         }
     }
 
-    private static void tryForCastling() {
+    private static void tryForCastling(byte[][] board) {
 
         int[] lastMove = history.get(history.size() - 1);
         int[] CastlingLowerShort = {7, 4, 7, 6};
@@ -159,29 +159,32 @@ public class GameBoard {
         int[] CastlingUpperLong = {0, 4, 0, 2};
 
         if (Arrays.equals(lastMove, CastlingLowerShort)) {
-            movePiece(7, 7, 7, 5);
+            movePiece(board, 7, 7, 7, 5);
+            history.remove(history.get(history.size() - 1));
         }
 
         if (Arrays.equals(lastMove, CastlingUpperShort)) {
-            movePiece(0, 7, 0, 5);
+            movePiece(board, 0, 7, 0, 5);
+            history.remove(history.get(history.size() - 1));
         }
 
         if (Arrays.equals(lastMove, CastlingLowerLong)) {
-            movePiece(7, 0, 7, 3);
+            movePiece(board, 7, 0, 7, 3);
+            history.remove(history.get(history.size() - 1));
         }
 
         if (Arrays.equals(lastMove, CastlingUpperLong)) {
-            movePiece(0, 0, 0, 3);
+            movePiece(board, 0, 0, 0, 3);
+            history.remove(history.get(history.size() - 1));
         }
-
     }
 
-    public static void resetGame(){
+    public static void resetGame() {
         GameBoard.resetBoard();
         GameBoard.resetPlayingColor();
         GameBoard.setGameStarted(false);
         GameBoard.resetHistory();
-        GameBoard.resetPseudoLegalMoves();
+        GameBoard.resetLegalMoves();
         GameBoard.resetSelection();
     }
 
@@ -191,14 +194,6 @@ public class GameBoard {
 
     public static Integer getSelectedCol() {
         return selectedCol;
-    }
-
-    public static Turn getTurn() {
-        return turn;
-    }
-
-    public static void setTurn(Turn turn) {
-        GameBoard.turn = turn;
     }
 
     public static Playing getPlaying() {

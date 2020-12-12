@@ -1,15 +1,15 @@
 package org.chess.core.Pieces;
 
-import org.chess.core.GameBoard;
+public class Queen extends Piece {
 
-public class Queen {
+    public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
 
-    public static boolean[][] calcPseudo(int row, int col) {
+        boolean[][] pseudoLegalMoves = new boolean[8][8];
 
-        Piece.calcDiagonal(row, col);
-        Piece.calcCross(row, col);
+        appendPseudoMoves(calcDiagonal(board, row, col), pseudoLegalMoves);
+        appendPseudoMoves(calcCross(board, row, col), pseudoLegalMoves);
 
-        return GameBoard.getPseudoLegalMoves();
+        return pseudoLegalMoves;
     }
 
 }

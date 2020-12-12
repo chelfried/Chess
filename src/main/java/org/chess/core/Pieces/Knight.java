@@ -1,13 +1,10 @@
 package org.chess.core.Pieces;
 
-import org.chess.core.GameBoard;
+public class Knight extends Piece{
 
-public class Knight {
+    public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
 
-    public static boolean[][] calcPseudo(int row, int col) {
-
-        boolean[][] pseudoLegalMoves = GameBoard.getPseudoLegalMoves();
-        byte[][] board = GameBoard.getActiveBoard();
+        boolean[][] pseudoLegalMoves = new boolean[8][8];
 
         if (row + 2 <= 7 && col - 1 >= 0) {
             if (board[row + 2][col - 1] == 0 ||

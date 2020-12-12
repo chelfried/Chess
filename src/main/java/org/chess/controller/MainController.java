@@ -96,7 +96,7 @@ public class MainController {
 
         byte[][] board = GameBoard.getActiveBoard();
         String[][] fieldClass = new String[8][8];
-        boolean[][] posMove = GameBoard.getPseudoLegalMoves();
+        boolean[][] posMove = GameBoard.getLegalMoves();
         Integer selRow = GameBoard.getSelectedRow();
         Integer selCol = GameBoard.getSelectedCol();
 

@@ -1,11 +1,9 @@
 package org.chess.core.Pieces;
 
-import org.chess.core.GameBoard;
+public class Bishop extends Piece{
 
-public class Bishop {
-
-    public static boolean[][] calcPseudo(int row, int col){
-        return Piece.calcDiagonal(row, col);
+    public static boolean[][] calcPseudo(byte[][] board, int row, int col){
+        return calcDiagonal(board, row, col);
     }
 
 }
