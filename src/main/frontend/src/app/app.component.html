@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+</head>
+<body>
+<div class="navbar">
+  <form method="post">
+    <div *ngIf="gameStarted">
+      <button (click)="resetBoard()" style="float: left">Start New Game</button>
+    </div>
+    <div *ngIf="!gameStarted">
+      <button (click)="pickColor('white')" style="float: left">Play as White</button>
+      <button (click)="pickColor('black')" style="float: right">Play as Black</button>
+    </div>
+  </form>
+</div>
+<div style="margin-bottom: 6em"></div>
+<table class="chess-board">
+  <tbody style="width: 30vh">
+  <tr>
+    <td colspan="10" style="height: auto; padding-bottom: 20px; cursor: default; font-size: 1.2em">{{ gameMessage }}</td>
+  </tr>
+  <tr>
+    <td colspan="3" style="cursor: default"></td>
+    <td *ngIf="whitePromoting" role="button" (click)="promote(5)"><img src="assets/img/RW.svg"></td>
+    <td *ngIf="whitePromoting" role="button" (click)="promote(4)"><img src="assets/img/NW.svg"></td>
+    <td *ngIf="whitePromoting" role="button" (click)="promote(3)"><img src="assets/img/BW.svg"></td>
+    <td *ngIf="whitePromoting" role="button" (click)="promote(2)"><img src="assets/img/QW.svg"></td>
+    <td *ngIf="blackPromoting" role="button" (click)="promote(-5)"><img src="assets/img/RB.svg"></td>
+    <td *ngIf="blackPromoting" role="button" (click)="promote(-4)"><img src="assets/img/NB.svg"></td>
+    <td *ngIf="blackPromoting" role="button" (click)="promote(-3)"><img src="assets/img/BB.svg"></td>
+    <td *ngIf="blackPromoting" role="button" (click)="promote(-2)"><img src="assets/img/QB.svg"></td>
+    <td colspan="3" style="cursor: default"></td>
+  </tr>
+  <tr style="height: 1em"></tr>
+  <tr>
+    <td class="marginCorner"></td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">a</div>
+      <div *ngIf="!playingWhite">h</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">b</div>
+      <div *ngIf="!playingWhite">g</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">c</div>
+      <div *ngIf="!playingWhite">f</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">d</div>
+      <div *ngIf="!playingWhite">e</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">e</div>
+      <div *ngIf="!playingWhite">d</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">f</div>
+      <div *ngIf="!playingWhite">c</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">g</div>
+      <div *ngIf="!playingWhite">b</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">h</div>
+      <div *ngIf="!playingWhite">a</div>
+    </td>
+    <td class="marginCorner"></td>
+  </tr>
+  <tr>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">8</div>
+      <div *ngIf="!playingWhite">1</div>
+    </td>
+    <td class="{{fieldClass[0][0]}}" role="button" (click)="select(0, 0)"><img src="{{ board[0][0] }}"></td>
+    <td class="{{fieldClass[0][1]}}" role="button" (click)="select(0, 1)"><img src="{{ board[0][1] }}"></td>
+    <td class="{{fieldClass[0][2]}}" role="button" (click)="select(0, 2)"><img src="{{ board[0][2] }}"></td>
+    <td class="{{fieldClass[0][3]}}" role="button" (click)="select(0, 3)"><img src="{{ board[0][3] }}"></td>
+    <td class="{{fieldClass[0][4]}}" role="button" (click)="select(0, 4)"><img src="{{ board[0][4] }}"></td>
+    <td class="{{fieldClass[0][5]}}" role="button" (click)="select(0, 5)"><img src="{{ board[0][5] }}"></td>
+    <td class="{{fieldClass[0][6]}}" role="button" (click)="select(0, 6)"><img src="{{ board[0][6] }}"></td>
+    <td class="{{fieldClass[0][7]}}" role="button" (click)="select(0, 7)"><img src="{{ board[0][7] }}"></td>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">8</div>
+      <div *ngIf="!playingWhite">1</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">7</div>
+      <div *ngIf="!playingWhite">2</div>
+    </td>
+    <td class="{{fieldClass[1][0]}}" role="button" (click)="select(1, 0)"><img src="{{ board[1][0] }}"></td>
+    <td class="{{fieldClass[1][1]}}" role="button" (click)="select(1, 1)"><img src="{{ board[1][1] }}"></td>
+    <td class="{{fieldClass[1][2]}}" role="button" (click)="select(1, 2)"><img src="{{ board[1][2] }}"></td>
+    <td class="{{fieldClass[1][3]}}" role="button" (click)="select(1, 3)"><img src="{{ board[1][3] }}"></td>
+    <td class="{{fieldClass[1][4]}}" role="button" (click)="select(1, 4)"><img src="{{ board[1][4] }}"></td>
+    <td class="{{fieldClass[1][5]}}" role="button" (click)="select(1, 5)"><img src="{{ board[1][5] }}"></td>
+    <td class="{{fieldClass[1][6]}}" role="button" (click)="select(1, 6)"><img src="{{ board[1][6] }}"></td>
+    <td class="{{fieldClass[1][7]}}" role="button" (click)="select(1, 7)"><img src="{{ board[1][7] }}"></td>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">7</div>
+      <div *ngIf="!playingWhite">2</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">6</div>
+      <div *ngIf="!playingWhite">3</div>
+    </td>
+    <td class="{{fieldClass[2][0]}}" role="button" (click)="select(2, 0)"><img src="{{ board[2][0] }}"></td>
+    <td class="{{fieldClass[2][1]}}" role="button" (click)="select(2, 1)"><img src="{{ board[2][1] }}"></td>
+    <td class="{{fieldClass[2][2]}}" role="button" (click)="select(2, 2)"><img src="{{ board[2][2] }}"></td>
+    <td class="{{fieldClass[2][3]}}" role="button" (click)="select(2, 3)"><img src="{{ board[2][3] }}"></td>
+    <td class="{{fieldClass[2][4]}}" role="button" (click)="select(2, 4)"><img src="{{ board[2][4] }}"></td>
+    <td class="{{fieldClass[2][5]}}" role="button" (click)="select(2, 5)"><img src="{{ board[2][5] }}"></td>
+    <td class="{{fieldClass[2][6]}}" role="button" (click)="select(2, 6)"><img src="{{ board[2][6] }}"></td>
+    <td class="{{fieldClass[2][7]}}" role="button" (click)="select(2, 7)"><img src="{{ board[2][7] }}"></td>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">6</div>
+      <div *ngIf="!playingWhite">3</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">5</div>
+      <div *ngIf="!playingWhite">4</div>
+    </td>
+    <td class="{{fieldClass[3][0]}}" role="button" (click)="select(3, 0)"><img src="{{ board[3][0] }}"></td>
+    <td class="{{fieldClass[3][1]}}" role="button" (click)="select(3, 1)"><img src="{{ board[3][1] }}"></td>
+    <td class="{{fieldClass[3][2]}}" role="button" (click)="select(3, 2)"><img src="{{ board[3][2] }}"></td>
+    <td class="{{fieldClass[3][3]}}" role="button" (click)="select(3, 3)"><img src="{{ board[3][3] }}"></td>
+    <td class="{{fieldClass[3][4]}}" role="button" (click)="select(3, 4)"><img src="{{ board[3][4] }}"></td>
+    <td class="{{fieldClass[3][5]}}" role="button" (click)="select(3, 5)"><img src="{{ board[3][5] }}"></td>
+    <td class="{{fieldClass[3][6]}}" role="button" (click)="select(3, 6)"><img src="{{ board[3][6] }}"></td>
+    <td class="{{fieldClass[3][7]}}" role="button" (click)="select(3, 7)"><img src="{{ board[3][7] }}"></td>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">5</div>
+      <div *ngIf="!playingWhite">4</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">4</div>
+      <div *ngIf="!playingWhite">5</div>
+    </td>
+    <td class="{{fieldClass[4][0]}}" role="button" (click)="select(4, 0);"><img src="{{ board[4][0] }}"></td>
+    <td class="{{fieldClass[4][1]}}" role="button" (click)="select(4, 1);"><img src="{{ board[4][1] }}"></td>
+    <td class="{{fieldClass[4][2]}}" role="button" (click)="select(4, 2);"><img src="{{ board[4][2] }}"></td>
+    <td class="{{fieldClass[4][3]}}" role="button" (click)="select(4, 3);"><img src="{{ board[4][3] }}"></td>
+    <td class="{{fieldClass[4][4]}}" role="button" (click)="select(4, 4);"><img src="{{ board[4][4] }}"></td>
+    <td class="{{fieldClass[4][5]}}" role="button" (click)="select(4, 5);"><img src="{{ board[4][5] }}"></td>
+    <td class="{{fieldClass[4][6]}}" role="button" (click)="select(4, 6);"><img src="{{ board[4][6] }}"></td>
+    <td class="{{fieldClass[4][7]}}" role="button" (click)="select(4, 7);"><img src="{{ board[4][7] }}"></td>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">4</div>
+      <div *ngIf="!playingWhite">5</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">3</div>
+      <div *ngIf="!playingWhite">6</div>
+    </td>
+    <td class="{{fieldClass[5][0]}}" role="button" (click)="select(5, 0)"><img src="{{ board[5][0] }}"></td>
+    <td class="{{fieldClass[5][1]}}" role="button" (click)="select(5, 1)"><img src="{{ board[5][1] }}"></td>
+    <td class="{{fieldClass[5][2]}}" role="button" (click)="select(5, 2)"><img src="{{ board[5][2] }}"></td>
+    <td class="{{fieldClass[5][3]}}" role="button" (click)="select(5, 3)"><img src="{{ board[5][3] }}"></td>
+    <td class="{{fieldClass[5][4]}}" role="button" (click)="select(5, 4)"><img src="{{ board[5][4] }}"></td>
+    <td class="{{fieldClass[5][5]}}" role="button" (click)="select(5, 5)"><img src="{{ board[5][5] }}"></td>
+    <td class="{{fieldClass[5][6]}}" role="button" (click)="select(5, 6)"><img src="{{ board[5][6] }}"></td>
+    <td class="{{fieldClass[5][7]}}" role="button" (click)="select(5, 7)"><img src="{{ board[5][7] }}"></td>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">3</div>
+      <div *ngIf="!playingWhite">6</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">2</div>
+      <div *ngIf="!playingWhite">7</div>
+    </td>
+    <td class="{{fieldClass[6][0]}}" role="button" (click)="select(6, 0)"><img src="{{ board[6][0] }}"></td>
+    <td class="{{fieldClass[6][1]}}" role="button" (click)="select(6, 1)"><img src="{{ board[6][1] }}"></td>
+    <td class="{{fieldClass[6][2]}}" role="button" (click)="select(6, 2)"><img src="{{ board[6][2] }}"></td>
+    <td class="{{fieldClass[6][3]}}" role="button" (click)="select(6, 3)"><img src="{{ board[6][3] }}"></td>
+    <td class="{{fieldClass[6][4]}}" role="button" (click)="select(6, 4)"><img src="{{ board[6][4] }}"></td>
+    <td class="{{fieldClass[6][5]}}" role="button" (click)="select(6, 5)"><img src="{{ board[6][5] }}"></td>
+    <td class="{{fieldClass[6][6]}}" role="button" (click)="select(6, 6)"><img src="{{ board[6][6] }}"></td>
+    <td class="{{fieldClass[6][7]}}" role="button" (click)="select(6, 7)"><img src="{{ board[6][7] }}"></td>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">2</div>
+      <div *ngIf="!playingWhite">7</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">1</div>
+      <div *ngIf="!playingWhite">8</div>
+    </td>
+    <td class="{{fieldClass[7][0]}}" role="button" (click)="select(7, 0)"><img src="{{ board[7][0] }}"></td>
+    <td class="{{fieldClass[7][1]}}" role="button" (click)="select(7, 1)"><img src="{{ board[7][1] }}"></td>
+    <td class="{{fieldClass[7][2]}}" role="button" (click)="select(7, 2)"><img src="{{ board[7][2] }}"></td>
+    <td class="{{fieldClass[7][3]}}" role="button" (click)="select(7, 3)"><img src="{{ board[7][3] }}"></td>
+    <td class="{{fieldClass[7][4]}}" role="button" (click)="select(7, 4)"><img src="{{ board[7][4] }}"></td>
+    <td class="{{fieldClass[7][5]}}" role="button" (click)="select(7, 5)"><img src="{{ board[7][5] }}"></td>
+    <td class="{{fieldClass[7][6]}}" role="button" (click)="select(7, 6)"><img src="{{ board[7][6] }}"></td>
+    <td class="{{fieldClass[7][7]}}" role="button" (click)="select(7, 7)"><img src="{{ board[7][7] }}"></td>
+    <td class="marginCol">
+      <div *ngIf="playingWhite">1</div>
+      <div *ngIf="!playingWhite">8</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="marginCorner"></td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">a</div>
+      <div *ngIf="!playingWhite">h</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">b</div>
+      <div *ngIf="!playingWhite">g</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">c</div>
+      <div *ngIf="!playingWhite">f</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">d</div>
+      <div *ngIf="!playingWhite">e</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">e</div>
+      <div *ngIf="!playingWhite">d</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">f</div>
+      <div *ngIf="!playingWhite">c</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">g</div>
+      <div *ngIf="!playingWhite">b</div>
+    </td>
+    <td class="marginRow">
+      <div *ngIf="playingWhite">h</div>
+      <div *ngIf="!playingWhite">a</div>
+    </td>
+    <td class="marginCorner"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
