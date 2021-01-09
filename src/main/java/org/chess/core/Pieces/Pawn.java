@@ -1,19 +1,15 @@
 package org.chess.core.Pieces;
 
-import org.chess.core.GameBoard;
-
-import java.util.Arrays;
-import java.util.List;
+import static org.chess.core.GameBoard.*;
 
 public class Pawn extends Piece{
 
     public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
 
         boolean[][] pseudoLegalMoves = new boolean[8][8];
-        List<int[]> history = GameBoard.getHistory();
-        GameBoard.Playing playing = GameBoard.getPlaying();
+        int playing = getHuman();
 
-        if ((playing == GameBoard.Playing.WHITE && board[row][col] == 6) || (playing == GameBoard.Playing.BLACK && board[row][col] == -6)) {
+        if ((playing == 1 && board[row][col] == 6) || (playing == 0 && board[row][col] == -6)) {
             if (row - 1 >= 0) {
                 if (board[row - 1][col] == 0) {
                     pseudoLegalMoves[row - 1][col] = true;
@@ -25,28 +21,14 @@ public class Pawn extends Piece{
                     if ((board[row][col] > 0 && board[row - 1][col - 1] < 0) || (board[row][col] < 0 && board[row - 1][col - 1] > 0)) {
                         pseudoLegalMoves[row - 1][col - 1] = true;
                     }
-                    if (((board[row][col] > 0 && board[row][col - 1] < 0) || (board[row][col] < 0 && board[row][col - 1] > 0)) && board[row - 1][col - 1] == 0) {
-                        if (row == 3 && Arrays.equals(history.get(history.size() - 1), new int[]{1, col - 1, 3, col - 1})) {
-                            pseudoLegalMoves[row - 1][col - 1] = true;
-                            int[] enPassant = {row, col, row - 1, col - 1};
-                            GameBoard.setEnPassant(enPassant);
-                        }
-                    }
                 }
                 if (col + 1 <= 7) {
                     if ((board[row][col] > 0 && board[row - 1][col + 1] < 0) || (board[row][col] < 0 && board[row - 1][col + 1] > 0)) {
                         pseudoLegalMoves[row - 1][col + 1] = true;
                     }
-                    if (((board[row][col] > 0 && board[row][col + 1] < 0) || (board[row][col] < 0 && board[row][col + 1] > 0)) && board[row - 1][col + 1] == 0) {
-                        if (row == 3 && Arrays.equals(history.get(history.size() - 1), new int[]{1, col + 1, 3, col + 1})) {
-                            pseudoLegalMoves[row - 1][col + 1] = true;
-                            int[] enPassant = {row, col, row - 1, col + 1};
-                            GameBoard.setEnPassant(enPassant);
-                        }
-                    }
                 }
             }
-        } else if ((playing == GameBoard.Playing.WHITE && board[row][col] == -6) || (playing == GameBoard.Playing.BLACK && board[row][col] == 6)) {
+        } else if ((playing == 1 && board[row][col] == -6) || (playing == 0 && board[row][col] == 6)) {
             if (row + 1 <= 7) {
                 if (board[row + 1][col] == 0) {
                     pseudoLegalMoves[row + 1][col] = true;
@@ -58,24 +40,10 @@ public class Pawn extends Piece{
                     if ((board[row][col] > 0 && board[row + 1][col - 1] < 0) || (board[row][col] < 0 && board[row + 1][col - 1] > 0)) {
                         pseudoLegalMoves[row + 1][col - 1] = true;
                     }
-                    if (((board[row][col] > 0 && board[row][col - 1] < 0) || (board[row][col] < 0 && board[row][col - 1] > 0)) && board[row + 1][col - 1] == 0) {
-                        if (row == 4 && Arrays.equals(history.get(history.size() - 1), new int[]{6, col - 1, 4, col - 1})) {
-                            pseudoLegalMoves[row + 1][col - 1] = true;
-                            int[] enPassant = {row, col, row + 1, col - 1};
-                            GameBoard.setEnPassant(enPassant);
-                        }
-                    }
                 }
                 if (col + 1 <= 7) {
                     if ((board[row][col] > 0 && board[row + 1][col + 1] < 0) || (board[row][col] < 0 && board[row + 1][col + 1] > 0)) {
                         pseudoLegalMoves[row + 1][col + 1] = true;
-                    }
-                    if (((board[row][col] > 0 && board[row][col + 1] < 0) || (board[row][col] < 0 && board[row][col + 1] > 0)) && board[row + 1][col + 1] == 0) {
-                        if (row == 4 && Arrays.equals(history.get(history.size() - 1), new int[]{6, col + 1, 4, col + 1})) {
-                            pseudoLegalMoves[row + 1][col + 1] = true;
-                            int[] enPassant = {row, col, row + 1, col + 1};
-                            GameBoard.setEnPassant(enPassant);
-                        }
                     }
                 }
             }

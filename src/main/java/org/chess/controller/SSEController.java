@@ -2,7 +2,6 @@ package org.chess.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,8 +30,6 @@ public class SSEController {
             }
         }
     }
-
-
 
     private SSEController() {
     }

@@ -1,6 +1,7 @@
 package org.chess.core.Pieces;
 
-import org.chess.core.GameBoard;
+import static org.chess.core.Castling.*;
+import static org.chess.core.MoveGenerator.getAttackVectors;
 
 public class King extends Piece {
 
@@ -74,7 +75,7 @@ public class King extends Piece {
 
         // Castling
 
-        if (!Piece.checkForPastMove(7, 4) && !Piece.checkForPastMove(7, 7)) {
+        if (!hasKing74Moved() && !hasRook77Moved()) {
             if (board[7][5] == 0 && board[7][6] == 0) {
                 if (!getAttackVectors(board, board[7][0])[7][5]) {
                     pseudoLegalMoves[7][6] = true;
@@ -82,7 +83,7 @@ public class King extends Piece {
             }
         }
 
-        if (!Piece.checkForPastMove(0, 4) && !Piece.checkForPastMove(0, 7)) {
+        if (!hasKing04Moved() && !hasRook07Moved()) {
             if (board[0][5] == 0 && board[0][6] == 0) {
                 if (!getAttackVectors(board, board[0][0])[0][5]) {
                     pseudoLegalMoves[0][6] = true;
@@ -90,7 +91,7 @@ public class King extends Piece {
             }
         }
 
-        if (!Piece.checkForPastMove(7, 4) && !Piece.checkForPastMove(7, 0)) {
+        if (!hasKing74Moved() && !hasRook70Moved()) {
             if (board[7][1] == 0 && board[7][2] == 0 && board[7][3] == 0) {
                 if (!getAttackVectors(board, board[7][0])[7][3]) {
                     pseudoLegalMoves[7][2] = true;
@@ -98,7 +99,7 @@ public class King extends Piece {
             }
         }
 
-        if (!Piece.checkForPastMove(0, 4) && !Piece.checkForPastMove(0, 0)) {
+        if (!hasKing04Moved() && !hasRook00Moved()) {
             if (board[0][1] == 0 && board[0][2] == 0 && board[0][3] == 0) {
                 if (!getAttackVectors(board, board[0][0])[0][3]) {
                     pseudoLegalMoves[0][2] = true;
