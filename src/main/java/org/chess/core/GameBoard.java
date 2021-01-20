@@ -2,9 +2,7 @@ package org.chess.core;
 
 import org.chess.controller.SSEController;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.chess.core.AlphaBeta.*;
 import static org.chess.core.Castling.resetCastlingHistory;
@@ -34,6 +32,8 @@ public class GameBoard {
     private static boolean blackKingChecked;
 
     private static boolean isAIThinking;
+
+    private static String history = "+";
 
     public static void initializeBoard() {
         if (human == 1) {
@@ -177,18 +177,23 @@ public class GameBoard {
         }
     }
 
-    public static void moveByAI() {
+    public static void moveByAI(){
         isAIThinking = true;
         SSEController.refreshPage();
         if (turn == 0 && human == 1) {
-            resetAlphaBetaBoard();
-            alphaBetaMax(copyBoard(activeBoard), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
-            movePiece(activeBoard,
-                    bestMove.fromRow,
-                    bestMove.fromCol,
-                    bestMove.toRow,
-                    bestMove.toCol
-            );
+            Move move = OpeningBook.findMove();
+            if (move != null){
+                wait(2000);
+                movePiece(getActiveBoard(), move.fromRow, move.fromCol, move.toRow, move.toCol);
+            } else {
+                resetAlphaBetaBoard();
+                alphaBetaMax(copyBoard(activeBoard), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+                movePiece(activeBoard,
+                        bestMove.fromRow,
+                        bestMove.fromCol,
+                        bestMove.toRow,
+                        bestMove.toCol
+                );}
             turn = 1;
         } else if (turn == 1 && ai == 1) {
             resetAlphaBetaBoard();
@@ -206,12 +211,21 @@ public class GameBoard {
     }
 
     public static void movePiece(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
+        history = history.concat(String.valueOf(fromRow) + fromCol + toRow + toCol);
         byte piece = board[fromRow][fromCol];
         board[fromRow][fromCol] = 0;
         board[toRow][toCol] = piece;
         tryForCastling(board, fromRow, fromCol, toRow, toCol);
         updateCastlingHistory(fromRow, fromCol);
         tryForPromotion(board);
+    }
+
+    public static void wait(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public static void simulateMove(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
@@ -330,6 +344,7 @@ public class GameBoard {
         resetPromotions();
         resetCastlingHistory();
         resetAlphaBetaBoard();
+        history = "+";
     }
 
 
@@ -382,6 +397,10 @@ public class GameBoard {
     public static void setPlayer(int player) {
         GameBoard.human = player;
         GameBoard.ai = 1 - player;
+    }
+
+    public static String getHistory() {
+        return history;
     }
 
     public static boolean isGameStarted() {

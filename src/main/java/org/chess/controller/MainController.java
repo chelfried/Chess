@@ -7,14 +7,14 @@ import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://5.12.95.70")
+@CrossOrigin(origins = "http://86.121.142.39")
 @RequestMapping(value = "/api")
 public class MainController {
 
     @PostMapping("/reset")
     public void resetGame() {
         GameBoard.resetGame();
-//        SSEController.refreshPage();
+        SSEController.refreshPage();
     }
 
     @PostMapping("/white")
@@ -22,7 +22,7 @@ public class MainController {
         GameBoard.setGameStarted(true);
         GameBoard.setPlayer(1);
         GameBoard.initializeBoard();
-//        SSEController.refreshPage();
+        SSEController.refreshPage();
     }
 
     @PostMapping("/black")
@@ -31,7 +31,7 @@ public class MainController {
         GameBoard.setPlayer(0);
         GameBoard.initializeBoard();
         GameBoard.moveByAI();
-//        SSEController.refreshPage();
+        SSEController.refreshPage();
     }
 
     @PostMapping("/{row}/{col}")

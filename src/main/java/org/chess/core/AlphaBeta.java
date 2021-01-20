@@ -9,7 +9,7 @@ import static org.chess.core.Rating.calcRating;
 
 public class AlphaBeta {
 
-    static int searchToDepth = 5;
+    static int searchToDepth = 4;
 
     static private byte[][] alphaBetaBoard = copyBoard(getActiveBoard());
 
