@@ -177,34 +177,25 @@ public class GameBoard {
         }
     }
 
-    public static void moveByAI(){
+    public static void moveByAI() {
         isAIThinking = true;
         SSEController.refreshPage();
-        if (turn == 0 && human == 1) {
+        if (turn == 1 && ai == 1 && history.equals("+")) {
+            wait(3000);
+            movePiece(activeBoard, 1, 3, 3, 3);
+            turn = 0;
+        }
+        if ((turn == 0 && ai == 0) || (turn == 1 && ai == 1)) {
             Move move = OpeningBook.findMove();
-            if (move != null){
+            if (move != null) {
                 wait(2000);
-                movePiece(getActiveBoard(), move.fromRow, move.fromCol, move.toRow, move.toCol);
+                movePiece(activeBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
             } else {
                 resetAlphaBetaBoard();
                 alphaBetaMax(copyBoard(activeBoard), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
-                movePiece(activeBoard,
-                        bestMove.fromRow,
-                        bestMove.fromCol,
-                        bestMove.toRow,
-                        bestMove.toCol
-                );}
-            turn = 1;
-        } else if (turn == 1 && ai == 1) {
-            resetAlphaBetaBoard();
-            alphaBetaMax(copyBoard(activeBoard), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
-            movePiece(activeBoard,
-                    bestMove.fromRow,
-                    bestMove.fromCol,
-                    bestMove.toRow,
-                    bestMove.toCol
-            );
-            turn = 0;
+                movePiece(activeBoard, bestMove.fromRow, bestMove.fromCol, bestMove.toRow, bestMove.toCol);
+            }
+            turn = 1 - turn;
         }
         isAIThinking = false;
         SSEController.refreshPage();

@@ -1,17 +1,21 @@
 package org.chess.core;
 
 import java.io.*;
-import java.util.Scanner;
+
+import static java.lang.Integer.parseInt;
 
 public class OpeningBook {
 
     public static Move findMove() {
 
-        String boardState = GameBoard.getHistory();
         BufferedReader br;
+
+        String boardState;
 
         if (GameBoard.getAI() == 1) {
             boardState = convertNotation();
+        } else {
+            boardState = GameBoard.getHistory();
         }
 
         System.out.println("History: " + boardState);
@@ -19,7 +23,7 @@ public class OpeningBook {
         String line;
 
         try {
-            br = new BufferedReader(new FileReader("openingBook.txt"));
+            br = new BufferedReader(new FileReader("openingBook.bin"));
             while ((line = br.readLine()) != null) {
                 if (line.contains(boardState)) {
                     System.out.println("Opening Book: " + line);
@@ -46,13 +50,14 @@ public class OpeningBook {
 
     public static String convertNotation() {
 
-        StringBuilder history = new StringBuilder(GameBoard.getHistory());
+        String history = GameBoard.getHistory();
+        String historyConverted = "+";
 
-        for (int i = 0; i < history.length(); i++) {
-            history.setCharAt(i, Character.forDigit(Math.abs(history.charAt(i) - 7), 10));
+        for (int i = 1; i < history.length(); i++) {
+            historyConverted = historyConverted.concat(String.valueOf(Math.abs(parseInt(history.substring(i, i + 1)) - 7)));
         }
 
-        return history.toString();
+        return historyConverted;
     }
 
 }

@@ -15,62 +15,6 @@ public class AlphaBeta {
 
     static Move bestMove;
 
-//    public static int alphaBeta(int depth, int alpha, int beta, int player) {
-//
-//        List<Move> moves = calcLegalMovesFor(player);
-//
-//        if (depth == 0) {
-//            if (player == getPlayer()) {
-//                return Rating.calcRating(alphaBetaBoard, player) * -1;
-//            } else {
-//                return Rating.calcRating(alphaBetaBoard, player);
-//            }
-//        }
-//
-//        for (Move move : moves) {
-//
-//            byte[][] temp = copyBoard(alphaBetaBoard);
-//
-//            movePiece(alphaBetaBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
-//
-//            int score = alphaBeta(depth - 1, alpha, beta, 1 - player);
-//
-//            alphaBetaBoard = temp;
-//
-//            if (player == getPlayer()) {
-//                if (score <= beta) {
-//                    beta = score;
-//                    if (depth == searchToDepth) {
-//                        bestMove = move;
-//                    }
-//                }
-//            } else {
-//                if (score > alpha) {
-//                    alpha = score;
-//                    if (depth == searchToDepth) {
-//                        bestMove = move;
-//                    }
-//                }
-//            }
-//
-//            if (alpha >= beta) {
-//                if (player == getPlayer()) {
-//                    return beta;
-//                } else {
-//                    return alpha;
-//                }
-//            }
-//
-//        }
-//
-//        if (player == getPlayer()) {
-//            return beta;
-//        } else {
-//            return alpha;
-//        }
-//
-//    }
-
     public static int alphaBetaMax(byte[][] board, int alpha, int beta, int depth) {
 
         if (depth == searchToDepth) {
