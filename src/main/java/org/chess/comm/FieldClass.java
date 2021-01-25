@@ -1,4 +1,6 @@
-package org.chess.core;
+package org.chess.comm;
+
+import org.chess.core.GameBoard;
 
 import static org.chess.core.MoveGenerator.getAttackVectors;
 import static org.chess.core.MoveGenerator.verifyForCheck;

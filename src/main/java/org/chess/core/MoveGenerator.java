@@ -11,12 +11,11 @@ public class MoveGenerator {
     public static boolean[][] calcLegal(byte[][] board, int row, int col) {
 
         boolean[][] legalMoves = calcPseudo(board, row, col);
-        boolean[][] pseudoLegalMoves = calcPseudo(board, row, col);
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                byte[][] tempBoard = copyBoard(board);
-                if (pseudoLegalMoves[i][j]) {
+                byte[][] tempBoard = deepCopyBoard(board);
+                if (legalMoves[i][j]) {
                     simulateMove(tempBoard, row, col, i, j);
                     if (verifyForCheck(tempBoard, getAttackVectors(tempBoard, tempBoard[i][j]))) {
                         legalMoves[i][j] = false;
@@ -39,11 +38,8 @@ public class MoveGenerator {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (player == 0 && board[i][j] < 0) {
-                    moves.addAll(convertLegalMoves(board, i, j));
-                }
-                if (player == 1 && board[i][j] > 0) {
-                    moves.addAll(convertLegalMoves(board, i, j));
+                if ((player == 0 && board[i][j] < 0) || (player == 1 && board[i][j] > 0)) {
+                    moves.addAll(addLegalMoves(board, i, j));
                 }
             }
         }
@@ -51,7 +47,7 @@ public class MoveGenerator {
         return moves;
     }
 
-    public static List<Move> convertLegalMoves(byte[][] board, int fromRow, int fromCol) {
+    public static List<Move> addLegalMoves(byte[][] board, int fromRow, int fromCol) {
 
         List<Move> moves = new ArrayList<>();
 
@@ -118,7 +114,7 @@ public class MoveGenerator {
     }
 
 
-    public static byte[][] copyBoard(byte[][] board) {
+    public static byte[][] deepCopyBoard(byte[][] board) {
 
         byte[][] copiedBoard = new byte[8][8];
 

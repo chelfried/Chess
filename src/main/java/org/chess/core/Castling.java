@@ -34,7 +34,6 @@ public class Castling {
         hasRook77Moved = false;
         hasKing04Moved = false;
         hasKing74Moved = false;
-
     }
 
     public static boolean hasRook00Moved() {

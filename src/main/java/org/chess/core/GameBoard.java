@@ -33,7 +33,7 @@ public class GameBoard {
 
     private static boolean isAIThinking;
 
-    private static String history = "+";
+    private static String history = "#";
 
     public static void initializeBoard() {
         if (human == 1) {
@@ -64,43 +64,6 @@ public class GameBoard {
         turn = 1;
     }
 
-    public static String[][] getPieces() {
-
-        String[][] boardString = new String[8][8];
-
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (activeBoard[i][j] == -6) {
-                    boardString[i][j] = "assets/img/PB.svg";
-                } else if (activeBoard[i][j] == -5) {
-                    boardString[i][j] = "assets/img/RB.svg";
-                } else if (activeBoard[i][j] == -4) {
-                    boardString[i][j] = "assets/img/NB.svg";
-                } else if (activeBoard[i][j] == -3) {
-                    boardString[i][j] = "assets/img/BB.svg";
-                } else if (activeBoard[i][j] == -2) {
-                    boardString[i][j] = "assets/img/QB.svg";
-                } else if (activeBoard[i][j] == -1) {
-                    boardString[i][j] = "assets/img/KB.svg";
-                } else if (activeBoard[i][j] == 1) {
-                    boardString[i][j] = "assets/img/KW.svg";
-                } else if (activeBoard[i][j] == 2) {
-                    boardString[i][j] = "assets/img/QW.svg";
-                } else if (activeBoard[i][j] == 3) {
-                    boardString[i][j] = "assets/img/BW.svg";
-                } else if (activeBoard[i][j] == 4) {
-                    boardString[i][j] = "assets/img/NW.svg";
-                } else if (activeBoard[i][j] == 5) {
-                    boardString[i][j] = "assets/img/RW.svg";
-                } else if (activeBoard[i][j] == 6) {
-                    boardString[i][j] = "assets/img/PW.svg";
-                }
-            }
-        }
-
-        return boardString;
-    }
-
     private static void resetBoard() {
         activeBoard = new byte[8][8];
     }
@@ -113,15 +76,7 @@ public class GameBoard {
         if ((!whitePromoting || !blackPromoting) && col >= 0 && col < 8 && row >= 0 && row < 8 && !checkForMate(activeBoard)) {
             if (selectedRow == null && selectedCol == null) {
                 if (activeBoard[row][col] != 0) {
-                    if (human == 1 && turn == 1 && activeBoard[row][col] > 0) {
-                        legalMoves = calcLegal(activeBoard, row, col);
-                        if (checkIfNoLegalMove(legalMoves)) {
-                            resetSelection();
-                        } else {
-                            selectedRow = row;
-                            selectedCol = col;
-                        }
-                    } else if (human == 0 && turn == 0 && activeBoard[row][col] < 0) {
+                    if ((human == 1 && turn == 1 && activeBoard[row][col] > 0) || (human == 0 && turn == 0 && activeBoard[row][col] < 0)) {
                         legalMoves = calcLegal(activeBoard, row, col);
                         if (checkIfNoLegalMove(legalMoves)) {
                             resetSelection();
@@ -143,11 +98,12 @@ public class GameBoard {
                         legalMoves = calcLegal(activeBoard, row, col);
                     }
                 } else {
-                    tryMove(selectedRow, selectedCol, row, col);
+                    checkMove(selectedRow, selectedCol, row, col);
                 }
 
             }
         }
+
     }
 
     private static boolean checkIfNoLegalMove(boolean[][] legalMoves) {
@@ -165,7 +121,7 @@ public class GameBoard {
         legalMoves = new boolean[8][8];
     }
 
-    private static void tryMove(int fromRow, int fromCol, int toRow, int toCol) {
+    private static void checkMove(int fromRow, int fromCol, int toRow, int toCol) {
         if (legalMoves[toRow][toCol]) {
             movePiece(activeBoard, fromRow, fromCol, toRow, toCol);
             resetSelection();
@@ -192,7 +148,7 @@ public class GameBoard {
                 movePiece(activeBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
             } else {
                 resetAlphaBetaBoard();
-                alphaBetaMax(copyBoard(activeBoard), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+                alphaBetaMax(deepCopyBoard(activeBoard), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
                 movePiece(activeBoard, bestMove.fromRow, bestMove.fromCol, bestMove.toRow, bestMove.toCol);
             }
             turn = 1 - turn;
@@ -211,19 +167,19 @@ public class GameBoard {
         tryForPromotion(board);
     }
 
+    public static void simulateMove(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
+        byte piece = board[fromRow][fromCol];
+        board[fromRow][fromCol] = 0;
+        board[toRow][toCol] = piece;
+        tryForCastling(board, fromRow, fromCol, toRow, toCol);
+    }
+
     public static void wait(int ms) {
         try {
             Thread.sleep(ms);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
-    }
-
-    public static void simulateMove(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
-        byte piece = board[fromRow][fromCol];
-        board[fromRow][fromCol] = 0;
-        board[toRow][toCol] = piece;
-        tryForCastling(board, fromRow, fromCol, toRow, toCol);
     }
 
     private static void resetSelection() {
@@ -307,7 +263,9 @@ public class GameBoard {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     if (activeBoard[i][j] > 0) {
-                        if (canMove(board, i, j)) return false;
+                        if (canMove(board, i, j)) {
+                            return false;
+                        }
                     }
                 }
             }
@@ -315,7 +273,9 @@ public class GameBoard {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     if (activeBoard[i][j] < 0) {
-                        if (canMove(board, i, j)) return false;
+                        if (canMove(board, i, j)) {
+                            return false;
+                        }
                     }
                 }
             }
@@ -335,7 +295,7 @@ public class GameBoard {
         resetPromotions();
         resetCastlingHistory();
         resetAlphaBetaBoard();
-        history = "+";
+        history = "#";
     }
 
 

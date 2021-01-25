@@ -1,4 +1,6 @@
-package org.chess.core;
+package org.chess.comm;
+
+import org.chess.core.GameBoard;
 
 public class GameMessage {
 

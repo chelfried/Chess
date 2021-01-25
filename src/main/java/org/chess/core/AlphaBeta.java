@@ -4,14 +4,14 @@ import java.util.List;
 
 import static org.chess.core.GameBoard.*;
 import static org.chess.core.MoveGenerator.calcLegalMovesFor;
-import static org.chess.core.MoveGenerator.copyBoard;
+import static org.chess.core.MoveGenerator.deepCopyBoard;
 import static org.chess.core.Rating.calcRating;
 
 public class AlphaBeta {
 
     static int searchToDepth = 4;
 
-    static private byte[][] alphaBetaBoard = copyBoard(getActiveBoard());
+    static private byte[][] alphaBetaBoard = deepCopyBoard(getActiveBoard());
 
     static Move bestMove;
 
@@ -30,7 +30,7 @@ public class AlphaBeta {
 
         for (Move move : moves) {
 
-            byte[][] tempBoard = copyBoard(board);
+            byte[][] tempBoard = deepCopyBoard(board);
 
             simulateMove(tempBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
 
@@ -66,7 +66,7 @@ public class AlphaBeta {
 
         for (Move move : moves) {
 
-            byte[][] tempBoard = copyBoard(board);
+            byte[][] tempBoard = deepCopyBoard(board);
 
             simulateMove(tempBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
 
@@ -89,7 +89,7 @@ public class AlphaBeta {
     }
 
     public static void resetAlphaBetaBoard() {
-        alphaBetaBoard = copyBoard(getActiveBoard());
+        alphaBetaBoard = deepCopyBoard(getActiveBoard());
         bestMove = null;
     }
 

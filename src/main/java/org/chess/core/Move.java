@@ -14,7 +14,7 @@ public class Move {
         this.toCol = toCol;
     }
 
-    public Move() {
+    private Move() {
     }
 
 }

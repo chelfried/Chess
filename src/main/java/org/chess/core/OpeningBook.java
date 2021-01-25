@@ -18,15 +18,12 @@ public class OpeningBook {
             boardState = GameBoard.getHistory();
         }
 
-        System.out.println("History: " + boardState);
-
         String line;
 
         try {
             br = new BufferedReader(new FileReader("openingBook.bin"));
             while ((line = br.readLine()) != null) {
                 if (line.contains(boardState)) {
-                    System.out.println("Opening Book: " + line);
                     int fromRow = line.charAt(boardState.length()) - 48;
                     int fromCol = line.charAt(boardState.length() + 1) - 48;
                     int toRow = line.charAt(boardState.length() + 2) - 48;

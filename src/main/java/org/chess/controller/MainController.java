@@ -1,8 +1,9 @@
 package org.chess.controller;
 
-import org.chess.core.FieldClass;
+import org.chess.comm.FieldClass;
+import org.chess.comm.FieldPiece;
 import org.chess.core.GameBoard;
-import org.chess.core.GameMessage;
+import org.chess.comm.GameMessage;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class MainController {
 
     @GetMapping("/board")
     public static String[][] getPieces() {
-        return GameBoard.getPieces();
+        return FieldPiece.getPieces();
     }
 
     @GetMapping("/gameStarted")
