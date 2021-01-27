@@ -90,11 +90,11 @@ input {
 }
 
 .chess-board .light {
-  background: #b3c5d4;
+  background-color: #b3c5d4;
 }
 
 .chess-board .dark {
-  background: #6b85a0;
+  background-color: #6b85a0;
 }
 
 .chess-board .selectedLight {
@@ -155,7 +155,46 @@ input {
   background-color: #bf5c5c;
   background-repeat: no-repeat;
   background-position: center;
+}
 
+.chess-board .lastMoveLight {
+  background-color: #a5d08e;
+}
+
+.chess-board .lastMoveDark {
+  background-color: #76a06b;
+}
+
+.chess-board .lastMoveTakeLight {
+  background-image: url("/assets/img/circle_take.svg");
+  background-size: 2.5em;
+  background-color: #a5d08e;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.chess-board .lastMoveTakeDark {
+  background-image: url("/assets/img/circle_take.svg");
+  background-size: 2.5em;
+  background-color: #76a06b;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.chess-board .lastMoveMoveLight {
+  background-image: url("/assets/img/circle.svg");
+  background-size: 1.5em;
+  background-color: #a5d08e;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.chess-board .lastMoveMoveDark {
+  background-image: url("/assets/img/circle.svg");
+  background-size: 1.5em;
+  background-color: #76a06b;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .chess-board td img {

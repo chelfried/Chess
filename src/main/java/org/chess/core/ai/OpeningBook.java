@@ -1,4 +1,7 @@
-package org.chess.core;
+package org.chess.core.ai;
+
+import org.chess.core.GameBoard;
+import org.chess.core.Move;
 
 import java.io.*;
 
@@ -29,6 +32,7 @@ public class OpeningBook {
                     int toRow = line.charAt(boardState.length() + 2) - 48;
                     int toCol = line.charAt(boardState.length() + 3) - 48;
                     System.out.println("Found Move: " + fromRow + fromCol + toRow + toCol);
+                    System.out.println("---");
                     if (GameBoard.getAI() == 1) {
                         fromRow = Math.abs(fromRow - 7);
                         fromCol = Math.abs(fromCol - 7);

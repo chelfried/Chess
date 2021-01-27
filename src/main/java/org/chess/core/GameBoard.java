@@ -1,12 +1,11 @@
 package org.chess.core;
 
 import org.chess.controller.SSEController;
+import org.chess.core.ai.OpeningBook;
+import org.chess.core.pieces.King;
+import org.chess.core.pieces.Pawn;
 
-import java.util.Arrays;
-
-import static org.chess.core.AlphaBeta.*;
-import static org.chess.core.Castling.resetCastlingHistory;
-import static org.chess.core.Castling.updateCastlingHistory;
+import static org.chess.core.ai._Interface.*;
 import static org.chess.core.MoveGenerator.*;
 
 public class GameBoard {
@@ -46,17 +45,30 @@ public class GameBoard {
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {6, 6, 6, 6, 6, 6, 6, 6},
                     {5, 4, 3, 2, 1, 3, 4, 5},
+                    {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
             });
+//            activeBoard = (new byte[][]{
+//                    {-5, 0, 0, 0, -1, 0, 0, -5},
+//                    {-6, -6, -6, -6, -6, -6, -6, -6},
+//                    {0, 0, 0, 0, 0, 0, 0, 0},
+//                    {1, 0, 0, 6, 0, 0, 0, -5},
+//                    {0, 0, 0, 0, 0, 0, 0, 0},
+//                    {0, 0, 0, 0, 0, 0, 0, 0},
+//                    {6, 6, 6, 0, 6, 6, 6, 6},
+//                    {5, 0, 0, 0, 0, 0, 0, 5},
+//                    {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
+//            });
         } else if (human == 0) {
             activeBoard = (new byte[][]{
-                    {5, 4, 3, 2, 1, 3, 4, 5},
+                    {5, 4, 3, 1, 2, 3, 4, 5},
                     {6, 6, 6, 6, 6, 6, 6, 6},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {-6, -6, -6, -6, -6, -6, -6, -6},
-                    {-5, -4, -3, -2, -1, -3, -4, -5}
+                    {-5, -4, -3, -1, -2, -3, -4, -5},
+                    {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
             });
         }
         selectedRow = null;
@@ -76,7 +88,11 @@ public class GameBoard {
         if ((!whitePromoting || !blackPromoting) && col >= 0 && col < 8 && row >= 0 && row < 8 && !checkForMate(activeBoard)) {
             if (selectedRow == null && selectedCol == null) {
                 if (activeBoard[row][col] != 0) {
-                    if ((human == 1 && turn == 1 && activeBoard[row][col] > 0) || (human == 0 && turn == 0 && activeBoard[row][col] < 0)) {
+                    if ((
+                            human == 1 &&
+                                    turn == 1 && activeBoard[row][col] > 0) || (
+                                            human == 0 &&
+                                                    turn == 0 && activeBoard[row][col] < 0)) {
                         legalMoves = calcLegal(activeBoard, row, col);
                         if (checkIfNoLegalMove(legalMoves)) {
                             resetSelection();
@@ -136,7 +152,7 @@ public class GameBoard {
     public static void moveByAI() {
         isAIThinking = true;
         SSEController.refreshPage();
-        if (turn == 1 && ai == 1 && history.equals("+")) {
+        if (turn == 1 && ai == 1 && history.equals("#")) {
             wait(3000);
             movePiece(activeBoard, 1, 3, 3, 3);
             turn = 0;
@@ -147,9 +163,10 @@ public class GameBoard {
                 wait(2000);
                 movePiece(activeBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
             } else {
-                resetAlphaBetaBoard();
-                alphaBetaMax(deepCopyBoard(activeBoard), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
-                movePiece(activeBoard, bestMove.fromRow, bestMove.fromCol, bestMove.toRow, bestMove.toCol);
+                if (!checkForMate(getActiveBoard())) {
+                    Move moveByAI = moveSearchAI();
+                    movePiece(activeBoard, moveByAI.fromRow, moveByAI.fromCol, moveByAI.toRow, moveByAI.toCol);
+                }
             }
             turn = 1 - turn;
         }
@@ -158,20 +175,17 @@ public class GameBoard {
     }
 
     public static void movePiece(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
-        history = history.concat(String.valueOf(fromRow) + fromCol + toRow + toCol);
-        byte piece = board[fromRow][fromCol];
-        board[fromRow][fromCol] = 0;
-        board[toRow][toCol] = piece;
-        tryForCastling(board, fromRow, fromCol, toRow, toCol);
-        updateCastlingHistory(fromRow, fromCol);
-        tryForPromotion(board);
-    }
+        if (board == activeBoard) {
+            history = history.concat(String.valueOf(fromRow) + fromCol + toRow + toCol);
+            System.out.println("History: " + history);
+        }
 
-    public static void simulateMove(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
-        byte piece = board[fromRow][fromCol];
+        board[toRow][toCol] = board[fromRow][fromCol];
         board[fromRow][fromCol] = 0;
-        board[toRow][toCol] = piece;
-        tryForCastling(board, fromRow, fromCol, toRow, toCol);
+
+        King.checkForCastling(board, fromRow, fromCol, toRow, toCol);
+        Pawn.checkForEnPassant(board, fromRow, fromCol, toRow, toCol);
+        Pawn.checkForPromotion(board);
     }
 
     public static void wait(int ms) {
@@ -185,62 +199,6 @@ public class GameBoard {
     private static void resetSelection() {
         selectedRow = null;
         selectedCol = null;
-    }
-
-    private static void tryForPromotion(byte[][] board) {
-        for (int i = 0; i < 8; i++) {
-            if (board[0][i] == 6 || board[7][i] == 6) {
-                if (board == activeBoard && human == 1) {
-                    whitePromoting = true;
-                } else {
-                    if (board[0][i] == 6) {
-                        board[0][i] = 2;
-                    } else if (board[7][i] == 6) {
-                        board[7][i] = 2;
-                    }
-                }
-            }
-            if (board[0][i] == -6 || board[7][i] == -6) {
-                if (board == activeBoard && human == 0) {
-                    blackPromoting = true;
-                } else if (board == activeBoard && ai == 0) {
-                    if (board[0][i] == -6) {
-                        board[0][i] = -2;
-                    } else if (board[7][i] == -6) {
-                        board[7][i] = -2;
-                    }
-                }
-            }
-        }
-    }
-
-    private static void tryForCastling(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
-
-        int[] lastMove = {fromRow, fromCol, toRow, toCol};
-        int[] CastlingLowerShort = {7, 4, 7, 6};
-        int[] CastlingUpperShort = {0, 4, 0, 6};
-        int[] CastlingLowerLong = {7, 4, 7, 2};
-        int[] CastlingUpperLong = {0, 4, 0, 2};
-
-        if (Arrays.equals(lastMove, CastlingLowerShort)) {
-            board[7][7] = 0;
-            board[7][5] = 5;
-        }
-
-        if (Arrays.equals(lastMove, CastlingUpperShort)) {
-            board[0][7] = 0;
-            board[0][5] = 5;
-        }
-
-        if (Arrays.equals(lastMove, CastlingLowerLong)) {
-            board[7][0] = 0;
-            board[7][3] = 5;
-        }
-
-        if (Arrays.equals(lastMove, CastlingUpperLong)) {
-            board[0][0] = 0;
-            board[0][3] = 5;
-        }
     }
 
     public static void promote(int piece) {
@@ -259,30 +217,47 @@ public class GameBoard {
     }
 
     public static boolean checkForMate(byte[][] board) {
-        if (whiteKingChecked) {
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if (activeBoard[i][j] > 0) {
-                        if (canMove(board, i, j)) {
-                            return false;
-                        }
+
+        int whiteKingRow = 0;
+        int whiteKingCol = 0;
+        boolean whiteCanMove = false;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] > 0) {
+                    if (canMove(board, i, j)) {
+                        whiteCanMove = true;
+                    }
+                    if (board[i][j] == 1) {
+                        whiteKingRow = i;
+                        whiteKingCol = j;
                     }
                 }
             }
-        } else if (blackKingChecked) {
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if (activeBoard[i][j] < 0) {
-                        if (canMove(board, i, j)) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        } else {
-            return false;
         }
-        return true;
+        if (getAttackVectors(board, 1)[whiteKingRow][whiteKingCol] && !whiteCanMove) {
+            return true;
+        }
+
+        int blackKingRow = 0;
+        int blackKingCol = 0;
+        boolean blackCanMove = false;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] < 0) {
+                    if (canMove(board, i, j)) {
+                        blackCanMove = true;
+                    }
+                    if (board[i][j] == -1) {
+                        blackKingRow = i;
+                        blackKingCol = j;
+                    }
+                }
+            }
+        }
+
+        return getAttackVectors(board, -1)[blackKingRow][blackKingCol] && !blackCanMove;
     }
 
     public static void resetGame() {
@@ -293,8 +268,6 @@ public class GameBoard {
         resetSelection();
         resetChecks();
         resetPromotions();
-        resetCastlingHistory();
-        resetAlphaBetaBoard();
         history = "#";
     }
 
@@ -380,6 +353,14 @@ public class GameBoard {
 
     public static boolean isAIThinking() {
         return isAIThinking;
+    }
+
+    public static void setWhitePromoting(boolean whitePromoting) {
+        GameBoard.whitePromoting = whitePromoting;
+    }
+
+    public static void setBlackPromoting(boolean blackPromoting) {
+        GameBoard.blackPromoting = blackPromoting;
     }
 
     private GameBoard() {

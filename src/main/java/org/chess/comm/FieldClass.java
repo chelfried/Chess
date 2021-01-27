@@ -2,6 +2,7 @@ package org.chess.comm;
 
 import org.chess.core.GameBoard;
 
+import static org.chess.core.GameBoard.getHistory;
 import static org.chess.core.MoveGenerator.getAttackVectors;
 import static org.chess.core.MoveGenerator.verifyForCheck;
 
@@ -77,7 +78,43 @@ public class FieldClass {
             }
         }
 
+        String history = getHistory();
+
+        if (!history.equals("#")) {
+
+            int fromRow = history.charAt(history.length() - 4) - 48;
+            int fromCol = history.charAt(history.length() - 3) - 48;
+            int toRow = history.charAt(history.length() - 2) - 48;
+            int toCol = history.charAt(history.length() - 1) - 48;
+
+            addLastMove(fieldClass, fromRow, fromCol);
+            addLastMove(fieldClass, toRow, toCol);
+        }
+
         return fieldClass;
+    }
+
+    private static void addLastMove(String[][] fieldClass, int row, int col) {
+        switch (fieldClass[row][col]) {
+            case "light":
+                fieldClass[row][col] = "lastMoveLight";
+                break;
+            case "dark":
+                fieldClass[row][col] = "lastMoveDark";
+                break;
+            case "moveLight":
+                fieldClass[row][col] = "lastMoveMoveLight";
+                break;
+            case "moveDark":
+                fieldClass[row][col] = "lastMoveMoveDark";
+                break;
+            case "takeLight":
+                fieldClass[row][col] = "lastMoveTakeLight";
+                break;
+            case "takeDark":
+                fieldClass[row][col] = "lastMoveTakeDark";
+                break;
+        }
     }
 
 }

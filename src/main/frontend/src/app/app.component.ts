@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   title = 'Chess';
 
   gameStarted: boolean;
-  playingWhite: boolean;
+  playingBlack: boolean;
   gameMessage: string;
   board: string[][];
   fieldClass: string[][];
@@ -75,9 +75,9 @@ export class AppComponent implements OnInit {
 
   getPlayerColor() {
     this.http
-      .get<boolean>('http://86.121.142.39:81/api/playingWhite')
+      .get<boolean>('http://86.121.142.39:81/api/playingBlack')
       .subscribe(data => {
-        this.playingWhite = data;
+        this.playingBlack = data;
       });
   }
 

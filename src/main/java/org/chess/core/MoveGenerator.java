@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.chess.core.GameBoard.*;
-import static org.chess.core.Pieces.Piece.calcPseudo;
+import static org.chess.core.pieces.Piece.calcPseudo;
 
 public class MoveGenerator {
 
@@ -16,7 +16,7 @@ public class MoveGenerator {
             for (int j = 0; j < 8; j++) {
                 byte[][] tempBoard = deepCopyBoard(board);
                 if (legalMoves[i][j]) {
-                    simulateMove(tempBoard, row, col, i, j);
+                    movePiece(tempBoard, row, col, i, j);
                     if (verifyForCheck(tempBoard, getAttackVectors(tempBoard, tempBoard[i][j]))) {
                         legalMoves[i][j] = false;
                     }
@@ -32,7 +32,7 @@ public class MoveGenerator {
         return legalMoves;
     }
 
-    public static List<Move> calcLegalMovesFor(byte[][] board, int player) {
+    public static List<Move> getAllLegalMovesFor(byte[][] board, int player) {
 
         List<Move> moves = new ArrayList<>();
 
@@ -83,13 +83,13 @@ public class MoveGenerator {
             return row - 1 >= 0 && col - 1 >= 0 && (board[row - 1][col - 1] == 1 || board[row - 1][col - 1] == -1);
     }
 
-    public static boolean[][] getAttackVectors(byte[][] board, int movedPiece) {
+    public static boolean[][] getAttackVectors(byte[][] board, int pieceColor) {
 
         boolean[][] attackVectors = new boolean[8][8];
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (movedPiece > 0 && board[i][j] < 0 || movedPiece < 0 && board[i][j] > 0) {
+                if (pieceColor > 0 && board[i][j] < 0 || pieceColor < 0 && board[i][j] > 0) {
                     if (board[i][j] != -1 && board[i][j] != 1) {
                         appendPseudoMoves(calcPseudo(board, i, j), attackVectors);
                     }
@@ -116,9 +116,9 @@ public class MoveGenerator {
 
     public static byte[][] deepCopyBoard(byte[][] board) {
 
-        byte[][] copiedBoard = new byte[8][8];
+        byte[][] copiedBoard = new byte[9][8];
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             System.arraycopy(board[i], 0, copiedBoard[i], 0, 8);
         }
 

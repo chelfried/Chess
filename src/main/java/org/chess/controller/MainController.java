@@ -51,9 +51,9 @@ public class MainController {
         return GameBoard.isGameStarted();
     }
 
-    @GetMapping("/playingWhite")
-    static boolean checkIfPlayingWhite() {
-        return GameBoard.getHuman() == 1;
+    @GetMapping("/playingBlack")
+    static boolean checkIfPlayingBlack() {
+        return GameBoard.getHuman() == 0;
     }
 
     @GetMapping("/gameMessage")

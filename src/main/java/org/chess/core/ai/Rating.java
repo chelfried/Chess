@@ -1,6 +1,7 @@
-package org.chess.core;
+package org.chess.core.ai;
 
-import static org.chess.core.GameBoard.getAI;
+import static org.chess.core.GameBoard.*;
+import static org.chess.core.MoveGenerator.*;
 
 public class Rating {
 
@@ -70,62 +71,61 @@ public class Rating {
             {-30, -40, -40, -50, -50, -40, -40, -30}
     };
 
-    public static int calcRating(byte[][] board) {
+    public static int calcRating(byte[][] board, int depth) {
 
         int rating = 0;
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-
                 int piece = Math.abs(board[row][col]);
-
                 if (piece == 6) {
                     rating += calcPositional(pawnTable, row, col, board[row][col]);
-                    if (board[row][col] > 0){
+                    if (board[row][col] > 0) {
                         rating += 100;
                     } else {
                         rating -= 100;
                     }
                 } else if (piece == 5) {
                     rating += calcPositional(rookTable, row, col, board[row][col]);
-                    if (board[row][col] > 0){
+                    if (board[row][col] > 0) {
                         rating += 500;
                     } else {
                         rating -= 500;
                     }
                 } else if (piece == 4) {
                     rating += calcPositional(knightTable, row, col, board[row][col]);
-                    if (board[row][col] > 0){
+                    if (board[row][col] > 0) {
                         rating += 300;
                     } else {
                         rating -= 300;
                     }
                 } else if (piece == 3) {
                     rating += calcPositional(bishopTable, row, col, board[row][col]);
-                    if (board[row][col] > 0){
+                    if (board[row][col] > 0) {
                         rating += 300;
                     } else {
                         rating -= 300;
                     }
                 } else if (piece == 2) {
                     rating += calcPositional(queenTable, row, col, board[row][col]);
-                    if (board[row][col] > 0){
+                    if (board[row][col] > 0) {
                         rating += 900;
                     } else {
                         rating -= 900;
                     }
                 } else if (piece == 1) {
                     rating += calcPositional(kingTable, row, col, board[row][col]);
-                    if (board[row][col] > 0){
-                        rating += 10000;
-                    } else {
-                        rating -= 10000;
-                    }
                 }
-
             }
-
         }
+
+//        if (getAllLegalMovesFor(board, getHuman()).size() == 0 && checkForMate(board)) {
+//            if (depth == 0) {
+//                rating -= 1000000;
+//            } else {
+//                rating -= 1000000 / depth;
+//            }
+//        }
 
         return rating;
     }

@@ -1,4 +1,4 @@
-package org.chess.core.Pieces;
+package org.chess.core.pieces;
 
 import static org.chess.core.MoveGenerator.appendPseudoMoves;
 
