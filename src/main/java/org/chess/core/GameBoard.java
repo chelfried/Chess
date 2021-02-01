@@ -56,7 +56,7 @@ public class GameBoard {
 //                    {0, 0, 0, 0, 0, 0, 0, 0},
 //                    {6, 6, 6, 0, 6, 6, 6, 6},
 //                    {5, 0, 0, 0, 0, 0, 0, 5},
-//                    {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
+//                    {0, 0, 0, 0, 0, 0, 0, 0}
 //            };
         } else if (human == 0) {
             activeBoard = new byte[][]{
@@ -77,7 +77,7 @@ public class GameBoard {
     }
 
     private static void resetBoard() {
-        activeBoard = new byte[8][8];
+        activeBoard = new byte[9][8];
     }
 
     public static byte[][] getActiveBoard() {
@@ -88,11 +88,7 @@ public class GameBoard {
         if ((!whitePromoting || !blackPromoting) && col >= 0 && col < 8 && row >= 0 && row < 8 && !checkForMate(activeBoard)) {
             if (selectedRow == null && selectedCol == null) {
                 if (activeBoard[row][col] != 0) {
-                    if ((
-                            human == 1 &&
-                                    turn == 1 && activeBoard[row][col] > 0) || (
-                                            human == 0 &&
-                                                    turn == 0 && activeBoard[row][col] < 0)) {
+                    if ((human == 1 && turn == 1 && activeBoard[row][col] > 0) || (human == 0 && turn == 0 && activeBoard[row][col] < 0)) {
                         legalMoves = calcLegal(activeBoard, row, col);
                         if (checkIfNoLegalMove(legalMoves)) {
                             resetSelection();
