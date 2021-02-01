@@ -4,6 +4,7 @@ import org.chess.comm.FieldClass;
 import org.chess.comm.FieldPiece;
 import org.chess.core.GameBoard;
 import org.chess.comm.GameMessage;
+import org.chess.core.pieces.Pawn;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,7 +79,7 @@ public class MainController {
 
     @PostMapping("/promote/{piece}")
     public void promote(@PathVariable int piece) {
-        GameBoard.promote(piece);
+        Pawn.promotePawn(GameBoard.getActiveBoard(), piece);
         SSEController.refreshPage();
     }
 

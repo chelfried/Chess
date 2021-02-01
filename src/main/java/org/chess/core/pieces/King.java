@@ -77,65 +77,71 @@ public class King extends Piece {
         }
 
         // Castling
+        if (board[row][col] == -1) {
+            boolean[][] attackVectorsWhite = getAttackVectors(board, -1);
+            if (GameBoard.getAI() == 0) {
+                if (board[8][0] == 0 && board[8][1] == 0) {
+                    if (board[0][1] == 0 && board[0][2] == 0 && board[0][3] == 0) {
+                        if (!attackVectorsWhite[0][2] && !attackVectorsWhite[0][3] && !attackVectorsWhite[0][4]) {
+                            pseudoLegalMoves[0][2] = true;
+                        }
+                    }
+                }
+                if (board[8][1] == 0 && board[8][2] == 0) {
+                    if (board[0][5] == 0 && board[0][6] == 0) {
+                        if (!attackVectorsWhite[0][4] && !attackVectorsWhite[0][5] && !attackVectorsWhite[0][6]) {
+                            pseudoLegalMoves[0][6] = true;
+                        }
+                    }
+                }
+            } else {
+                if (board[8][3] == 0 && board[8][4] == 0) {
+                    if (board[7][1] == 0 && board[7][2] == 0) {
+                        if (!attackVectorsWhite[7][1] && !attackVectorsWhite[7][2] && !attackVectorsWhite[7][3]) {
+                            pseudoLegalMoves[7][1] = true;
+                        }
+                    }
+                }
+                if (board[8][4] == 0 && board[8][5] == 0) {
+                    if (board[7][4] == 0 && board[7][5] == 0 && board[7][6] == 0) {
+                        if (!attackVectorsWhite[7][3] && !attackVectorsWhite[7][4] && !attackVectorsWhite[7][5]) {
+                            pseudoLegalMoves[7][5] = true;
+                        }
+                    }
+                }
+            }
+        }
 
-        boolean[][] attackVectorsWhite = getAttackVectors(board, -1);
-        boolean[][] attackVectorsBlack = getAttackVectors(board, 1);
-
-        if (GameBoard.getAI() == 0) {
-            if (board[8][0] == 0 && board[8][1] == 0 && board[row][col] == -1) {
-                if (board[0][1] == 0 && board[0][2] == 0 && board[0][3] == 0) {
-                    if (!attackVectorsWhite[0][2] && !attackVectorsWhite[0][3] && !attackVectorsWhite[0][4]) {
-                        pseudoLegalMoves[0][2] = true;
+        if (board[row][col] == 1) {
+            boolean[][] attackVectorsBlack = getAttackVectors(board, 1);
+            if (GameBoard.getAI() == 0) {
+                if (board[8][3] == 0 && board[8][4] == 0) {
+                    if (board[7][1] == 0 && board[7][2] == 0 && board[7][3] == 0) {
+                        if (!attackVectorsBlack[7][2] && !attackVectorsBlack[7][3] && !attackVectorsBlack[7][4]) {
+                            pseudoLegalMoves[7][2] = true;
+                        }
                     }
                 }
-            }
-            if (board[8][1] == 0 && board[8][2] == 0 && board[row][col] == -1) {
-                if (board[0][5] == 0 && board[0][6] == 0) {
-                    if (!attackVectorsWhite[0][4] && !attackVectorsWhite[0][5] && !attackVectorsWhite[0][6]) {
-                        pseudoLegalMoves[0][6] = true;
+                if (board[8][4] == 0 && board[8][5] == 0) {
+                    if (board[7][5] == 0 && board[7][6] == 0) {
+                        if (!attackVectorsBlack[7][4] && !attackVectorsBlack[7][5] && !attackVectorsBlack[7][6]) {
+                            pseudoLegalMoves[7][6] = true;
+                        }
                     }
                 }
-            }
-            if (board[8][3] == 0 && board[8][4] == 0 && board[row][col] == 1) {
-                if (board[7][1] == 0 && board[7][2] == 0 && board[7][3] == 0) {
-                    if (!attackVectorsBlack[7][2] && !attackVectorsBlack[7][3] && !attackVectorsBlack[7][4]) {
-                        pseudoLegalMoves[7][2] = true;
+            } else {
+                if (board[8][0] == 0 && board[8][1] == 0) {
+                    if (board[0][1] == 0 && board[0][2] == 0) {
+                        if (!attackVectorsBlack[0][1] && !attackVectorsBlack[0][2] && !attackVectorsBlack[0][3]) {
+                            pseudoLegalMoves[0][1] = true;
+                        }
                     }
                 }
-            }
-            if (board[8][4] == 0 && board[8][5] == 0 && board[row][col] == 1) {
-                if (board[7][5] == 0 && board[7][6] == 0) {
-                    if (!attackVectorsBlack[7][4] && !attackVectorsBlack[7][5] && !attackVectorsBlack[7][6]) {
-                        pseudoLegalMoves[7][6] = true;
-                    }
-                }
-            }
-        } else {
-            if (board[8][0] == 0 && board[8][1] == 0 && board[row][col] == 1) {
-                if (board[0][1] == 0 && board[0][2] == 0) {
-                    if (!attackVectorsBlack[0][1] && !attackVectorsBlack[0][2] && !attackVectorsBlack[0][3]) {
-                        pseudoLegalMoves[0][1] = true;
-                    }
-                }
-            }
-            if (board[8][1] == 0 && board[8][2] == 0 && board[row][col] == 1) {
-                if (board[0][4] == 0 && board[0][5] == 0 && board[0][6] == 0) {
-                    if (!attackVectorsBlack[0][3] && !attackVectorsBlack[0][4] && !attackVectorsBlack[0][5]) {
-                        pseudoLegalMoves[0][5] = true;
-                    }
-                }
-            }
-            if (board[8][3] == 0 && board[8][4] == 0 && board[row][col] == -1) {
-                if (board[7][1] == 0 && board[7][2] == 0) {
-                    if (!attackVectorsWhite[7][1] && !attackVectorsWhite[7][2] && !attackVectorsWhite[7][3]) {
-                        pseudoLegalMoves[7][1] = true;
-                    }
-                }
-            }
-            if (board[8][4] == 0 && board[8][5] == 0 && board[row][col] == -1) {
-                if (board[7][4] == 0 && board[7][5] == 0 && board[7][6] == 0) {
-                    if (!attackVectorsWhite[7][3] && !attackVectorsWhite[7][4] && !attackVectorsWhite[7][5]) {
-                        pseudoLegalMoves[7][5] = true;
+                if (board[8][1] == 0 && board[8][2] == 0) {
+                    if (board[0][4] == 0 && board[0][5] == 0 && board[0][6] == 0) {
+                        if (!attackVectorsBlack[0][3] && !attackVectorsBlack[0][4] && !attackVectorsBlack[0][5]) {
+                            pseudoLegalMoves[0][5] = true;
+                        }
                     }
                 }
             }

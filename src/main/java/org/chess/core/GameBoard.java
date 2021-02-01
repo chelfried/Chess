@@ -10,9 +10,9 @@ import static org.chess.core.MoveGenerator.*;
 
 public class GameBoard {
 
-    private static byte[][] activeBoard = new byte[8][8];
+    private static byte[][] activeBoard;
 
-    private static boolean[][] legalMoves = new boolean[8][8];
+    private static boolean[][] legalMoves;
 
     private static boolean gameStarted;
 
@@ -36,7 +36,7 @@ public class GameBoard {
 
     public static void initializeBoard() {
         if (human == 1) {
-            activeBoard = (new byte[][]{
+            activeBoard = new byte[][]{
                     {-5, -4, -3, -2, -1, -3, -4, -5},
                     {-6, -6, -6, -6, -6, -6, -6, -6},
                     {0, 0, 0, 0, 0, 0, 0, 0},
@@ -46,8 +46,8 @@ public class GameBoard {
                     {6, 6, 6, 6, 6, 6, 6, 6},
                     {5, 4, 3, 2, 1, 3, 4, 5},
                     {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
-            });
-//            activeBoard = (new byte[][]{
+            };
+//            activeBoard = new byte[][]{
 //                    {-5, 0, 0, 0, -1, 0, 0, -5},
 //                    {-6, -6, -6, -6, -6, -6, -6, -6},
 //                    {0, 0, 0, 0, 0, 0, 0, 0},
@@ -57,9 +57,9 @@ public class GameBoard {
 //                    {6, 6, 6, 0, 6, 6, 6, 6},
 //                    {5, 0, 0, 0, 0, 0, 0, 5},
 //                    {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
-//            });
+//            };
         } else if (human == 0) {
-            activeBoard = (new byte[][]{
+            activeBoard = new byte[][]{
                     {5, 4, 3, 1, 2, 3, 4, 5},
                     {6, 6, 6, 6, 6, 6, 6, 6},
                     {0, 0, 0, 0, 0, 0, 0, 0},
@@ -69,7 +69,7 @@ public class GameBoard {
                     {-6, -6, -6, -6, -6, -6, -6, -6},
                     {-5, -4, -3, -1, -2, -3, -4, -5},
                     {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
-            });
+            };
         }
         selectedRow = null;
         selectedCol = null;
@@ -184,7 +184,7 @@ public class GameBoard {
         board[fromRow][fromCol] = 0;
 
         King.checkForCastling(board, fromRow, fromCol, toRow, toCol);
-        Pawn.checkForEnPassant(board, fromRow, fromCol, toRow, toCol);
+        Pawn.checkForEnPassant(board, fromRow, toRow, toCol);
         Pawn.checkForPromotion(board);
     }
 
@@ -199,21 +199,6 @@ public class GameBoard {
     private static void resetSelection() {
         selectedRow = null;
         selectedCol = null;
-    }
-
-    public static void promote(int piece) {
-        if (whitePromoting || blackPromoting) {
-            for (int i = 0; i < 8; i++) {
-                if ((activeBoard[0][i] == 6 && piece > 0) || (activeBoard[0][i] == -6 && piece < 0)) {
-                    activeBoard[0][i] = (byte) piece;
-                } else if ((activeBoard[7][i] == 6 && piece > 0) || (activeBoard[7][i] == -6 && piece < 0)) {
-                    activeBoard[7][i] = (byte) piece;
-                }
-            }
-            whitePromoting = false;
-            blackPromoting = false;
-            turn = 1 - turn;
-        }
     }
 
     public static boolean checkForMate(byte[][] board) {
