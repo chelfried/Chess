@@ -19,7 +19,7 @@ public class MoveSorting {
         for (Move move : moves) {
             byte[][] tempBoard = deepCopyBoard(board);
             movePiece(tempBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
-            sortedList.add(new Pair<>(calcRating(tempBoard, 0) * (player * 2 - 1), move));
+            sortedList.add(new Pair<>(calcRating(tempBoard, -1, 0) * (player * 2 - 1), move));
         }
 
         sortedList.sort(Comparator.comparingInt(Pair<Integer, Move>::getKey).reversed());

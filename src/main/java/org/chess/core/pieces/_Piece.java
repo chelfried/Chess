@@ -1,6 +1,6 @@
 package org.chess.core.pieces;
 
-public class Piece {
+public class _Piece {
 
     public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
 

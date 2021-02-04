@@ -26,9 +26,10 @@ public class GameMessage {
             message += " Pick a piece to promote to.";
         }
 
-        if(GameBoard.isAIThinking()){
+        if (GameBoard.isAIThinking()) {
             message += " AI is thinking.";
         }
+
 
         if (GameBoard.checkForMate(GameBoard.getActiveBoard())) {
             message = "Checkmate.";

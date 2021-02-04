@@ -2,8 +2,11 @@ package org.chess.core.ai;
 
 import org.chess.core.Move;
 
-import static org.chess.core.GameBoard.getActiveBoard;
+import java.util.List;
+
+import static org.chess.core.GameBoard.*;
 import static org.chess.core.MoveGenerator.deepCopyBoard;
+import static org.chess.core.MoveGenerator.getAllLegalMovesFor;
 import static org.chess.core.ai.AlphaBeta.alphaBetaMax;
 import static org.chess.core.ai.MiniMax.max;
 
@@ -13,7 +16,6 @@ public class _Interface {
     static Move bestMove;
 
     static int leafNodesEvaluated;
-
     public static Move moveSearchAI() {
 
         bestMove = null;
@@ -23,8 +25,11 @@ public class _Interface {
 
         startStopWatch();
 
+        List<Move> moveList = getAllLegalMovesFor(getActiveBoard(), getAI());
+        moveList = MoveSorting.sortMoves(deepCopyBoard(getActiveBoard()), moveList, getAI());
+
 //        max(deepCopyBoard(getActiveBoard()), 0);
-        alphaBetaMax(deepCopyBoard(getActiveBoard()), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+        alphaBetaMax(deepCopyBoard(getActiveBoard()), moveList, Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
 
         System.out.printf("\n\n%d LEAF NODES EVALUATED IN\n", leafNodesEvaluated);
         System.out.printf("%d MILLISECONDS\n", endStopWatch());

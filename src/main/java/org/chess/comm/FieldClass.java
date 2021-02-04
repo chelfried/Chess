@@ -32,20 +32,22 @@ public class FieldClass {
             }
         }
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (posMove[i][j]) {
-                    if (fieldClass[i][j].equals("light")) {
-                        if ((board[i][j] > 0 && board[selRow][selCol] < 0) || (board[i][j] < 0 && board[selRow][selCol] > 0))
-                            fieldClass[i][j] = "takeLight";
-                        else {
-                            fieldClass[i][j] = "moveLight";
-                        }
-                    } else if (fieldClass[i][j].equals("dark")) {
-                        if ((board[i][j] > 0 && board[selRow][selCol] < 0) || (board[i][j] < 0 && board[selRow][selCol] > 0))
-                            fieldClass[i][j] = "takeDark";
-                        else {
-                            fieldClass[i][j] = "moveDark";
+        if (posMove != null) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (posMove[i][j]) {
+                        if (fieldClass[i][j].equals("light")) {
+                            if ((board[i][j] > 0 && board[selRow][selCol] < 0) || (board[i][j] < 0 && board[selRow][selCol] > 0))
+                                fieldClass[i][j] = "takeLight";
+                            else {
+                                fieldClass[i][j] = "moveLight";
+                            }
+                        } else if (fieldClass[i][j].equals("dark")) {
+                            if ((board[i][j] > 0 && board[selRow][selCol] < 0) || (board[i][j] < 0 && board[selRow][selCol] > 0))
+                                fieldClass[i][j] = "takeDark";
+                            else {
+                                fieldClass[i][j] = "moveDark";
+                            }
                         }
                     }
                 }
@@ -60,19 +62,21 @@ public class FieldClass {
             }
         }
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (verifyForCheck(board, getAttackVectors(board, board[i][j])) &&
-                        (board[i][j] == -1 || board[i][j] == 1)) {
-                    if (selRow != null && selRow == i && selCol != null && j == selCol) {
-                        fieldClass[i][j] = "selectedCheck";
-                    } else {
-                        fieldClass[i][j] = "check";
-                    }
-                    if (board[i][j] == 1) {
-                        GameBoard.setWhiteKingChecked(true);
-                    } else {
-                        GameBoard.setBlackKingChecked(true);
+        if (board != null) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (verifyForCheck(board, getAttackVectors(board, board[i][j])) &&
+                            (board[i][j] == -1 || board[i][j] == 1)) {
+                        if (selRow != null && selRow == i && selCol != null && j == selCol) {
+                            fieldClass[i][j] = "selectedCheck";
+                        } else {
+                            fieldClass[i][j] = "check";
+                        }
+                        if (board[i][j] == 1) {
+                            GameBoard.setWhiteKingChecked(true);
+                        } else {
+                            GameBoard.setBlackKingChecked(true);
+                        }
                     }
                 }
             }

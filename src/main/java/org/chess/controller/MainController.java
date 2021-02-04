@@ -8,8 +8,10 @@ import org.chess.core.pieces.Pawn;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
-@CrossOrigin(origins = "http://86.121.142.39")
+@CrossOrigin
 @RequestMapping(value = "/api")
 public class MainController {
 
@@ -83,7 +85,7 @@ public class MainController {
         SSEController.refreshPage();
     }
 
-    private MainController() {
+    private MainController() throws IOException {
     }
 
 

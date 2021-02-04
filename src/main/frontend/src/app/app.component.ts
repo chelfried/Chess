@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
   }
 
   subscribeToSSE() {
-    this.sseClient.get('http://86.121.142.39:81/subscribe')
+    this.sseClient.get('http://127.0.0.1:81/subscribe')
       .subscribe(data => {
         this.hasGameStarted();
         this.getFieldClasses();
@@ -59,7 +59,7 @@ export class AppComponent implements OnInit {
 
   getPieces() {
     this.http
-      .get<string[][]>('http://86.121.142.39:81/api/board')
+      .get<string[][]>('http://127.0.0.1:81/api/board')
       .subscribe(data => {
         this.board = data;
       });
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
 
   getFieldClasses() {
     this.http
-      .get<string[][]>('http://86.121.142.39:81/api/fieldClass')
+      .get<string[][]>('http://127.0.0.1:81/api/fieldClass')
       .subscribe(data => {
         this.fieldClass = data;
       });
@@ -75,7 +75,7 @@ export class AppComponent implements OnInit {
 
   getPlayerColor() {
     this.http
-      .get<boolean>('http://86.121.142.39:81/api/playingBlack')
+      .get<boolean>('http://127.0.0.1:81/api/playingBlack')
       .subscribe(data => {
         this.playingBlack = data;
       });
@@ -83,7 +83,7 @@ export class AppComponent implements OnInit {
 
   isWhitePromoting() {
     this.http
-      .get<boolean>('http://86.121.142.39:81/api/whitePromoting')
+      .get<boolean>('http://127.0.0.1:81/api/whitePromoting')
       .subscribe(data => {
         this.whitePromoting = data;
       });
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit {
 
   isBlackPromoting() {
     this.http
-      .get<boolean>('http://86.121.142.39:81/api/blackPromoting')
+      .get<boolean>('http://127.0.0.1:81/api/blackPromoting')
       .subscribe(data => {
         this.blackPromoting = data;
       });
@@ -99,14 +99,14 @@ export class AppComponent implements OnInit {
 
   promote(piece: number) {
     this.http
-      .post<string>('http://86.121.142.39:81/api/promote/' + piece, null)
+      .post<string>('http://127.0.0.1:81/api/promote/' + piece, null)
       .subscribe(() => {
       });
   }
 
   getGameMessage() {
     this.http
-      .get<string>('http://86.121.142.39:81/api/gameMessage')
+      .get<string>('http://127.0.0.1:81/api/gameMessage')
       .subscribe(response => {
         this.gameMessage = response;
       });
@@ -114,7 +114,7 @@ export class AppComponent implements OnInit {
 
   pickColor(color: string) {
     this.http
-      .post<string>('http://86.121.142.39:81/api/' + color, null)
+      .post<string>('http://127.0.0.1:81/api/' + color, null)
       .subscribe(() => {
         window.location.reload();
       });
@@ -122,7 +122,7 @@ export class AppComponent implements OnInit {
 
   resetBoard() {
     this.http
-      .post<string>('http://86.121.142.39:81/api/' + 'reset/', null)
+      .post<string>('http://127.0.0.1:81/api/' + 'reset/', null)
       .subscribe(() => {
         window.location.reload();
       });
@@ -130,14 +130,14 @@ export class AppComponent implements OnInit {
 
   select(row: number, col: number) {
     this.http
-      .post<string>('http://86.121.142.39:81/api/' + row + '/' + col, null)
+      .post<string>('http://127.0.0.1:81/api/' + row + '/' + col, null)
       .subscribe(() => {
       });
   }
 
   hasGameStarted() {
     this.http
-      .get<boolean>('http://86.121.142.39:81/api/gameStarted')
+      .get<boolean>('http://127.0.0.1:81/api/gameStarted')
       .subscribe(data => {
         this.gameStarted = data;
       });

@@ -2,7 +2,7 @@ package org.chess.core.pieces;
 
 import static org.chess.core.MoveGenerator.appendPseudoMoves;
 
-public class Queen extends Piece {
+public class Queen extends _Piece {
 
     public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
 

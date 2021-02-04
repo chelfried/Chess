@@ -15,7 +15,7 @@ public class MiniMax extends _Interface{
 
         if (currentDepth == searchToDepth) {
             leafNodesEvaluated++;
-            return calcRating(board, currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board, 0, currentDepth) * (getAI() * 2 - 1);
         }
 
         List<Move> moves = getAllLegalMovesFor(board, getAI());
@@ -49,7 +49,7 @@ public class MiniMax extends _Interface{
 
         if (currentDepth == searchToDepth) {
             leafNodesEvaluated++;
-            return calcRating(board, currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board, 0, currentDepth) * (getAI() * 2 - 1);
         }
 
         List<Move> moves = getAllLegalMovesFor(board, getHuman());

@@ -10,18 +10,15 @@ import static org.chess.core.ai.Rating.calcRating;
 
 public class AlphaBeta extends _Interface {
 
-    public static int alphaBetaMax(byte[][] board, int alpha, int beta, int currentDepth) {
+    public static int alphaBetaMax(byte[][] board, List<Move> moves, int alpha, int beta, int currentDepth) {
 
         if (currentDepth == searchToDepth) {
             leafNodesEvaluated++;
-            return calcRating(board, currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board, moves.size(), currentDepth) * (getHuman() * 2 - 1);
         }
 
-        List<Move> moves = getAllLegalMovesFor(board, getAI());
-        moves = MoveSorting.sortMoves(deepCopyBoard(board), moves, getAI());
-
         if (moves.size() == 0) {
-            return calcRating(board, currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board, 0, currentDepth) * (getHuman() * 2 - 1);
         }
 
         for (Move move : moves) {
@@ -30,7 +27,9 @@ public class AlphaBeta extends _Interface {
 
             movePiece(tempBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
 
-            int score = alphaBetaMin(tempBoard, alpha, beta, currentDepth + 1);
+            List<Move> moveList = MoveSorting.sortMoves(tempBoard, getAllLegalMovesFor(tempBoard, getHuman()), getHuman());
+
+            int score = alphaBetaMin(tempBoard, moveList, alpha, beta, currentDepth + 1);
 
             if (score >= beta) {
                 return beta;
@@ -53,18 +52,15 @@ public class AlphaBeta extends _Interface {
         return alpha;
     }
 
-    public static int alphaBetaMin(byte[][] board, int alpha, int beta, int currentDepth) {
+    public static int alphaBetaMin(byte[][] board, List<Move> moves, int alpha, int beta, int currentDepth) {
 
         if (currentDepth == searchToDepth) {
             leafNodesEvaluated++;
-            return calcRating(board, currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board, moves.size(), currentDepth) * (getAI() * 2 - 1);
         }
 
-        List<Move> moves = getAllLegalMovesFor(board, getHuman());
-        moves = MoveSorting.sortMoves(deepCopyBoard(board), moves, getHuman());
-
         if (moves.size() == 0) {
-            return calcRating(board, currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board, 0, currentDepth) * (getAI() * 2 - 1);
         }
 
         for (Move move : moves) {
@@ -73,7 +69,9 @@ public class AlphaBeta extends _Interface {
 
             movePiece(tempBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
 
-            int score = alphaBetaMax(tempBoard, alpha, beta, currentDepth + 1);
+            List<Move> moveList = MoveSorting.sortMoves(tempBoard, getAllLegalMovesFor(tempBoard, getAI()), getAI());
+
+            int score = alphaBetaMax(tempBoard, moveList, alpha, beta, currentDepth + 1);
 
             if (score <= alpha) {
                 return alpha;

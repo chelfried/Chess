@@ -2,11 +2,9 @@ package org.chess.core.pieces;
 
 import org.chess.core.GameBoard;
 
-import java.util.Arrays;
-
 import static org.chess.core.MoveGenerator.getAttackVectors;
 
-public class King extends Piece {
+public class King extends _Piece {
 
     public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
 
@@ -77,71 +75,60 @@ public class King extends Piece {
         }
 
         // Castling
-        if (board[row][col] == -1) {
-            boolean[][] attackVectorsWhite = getAttackVectors(board, -1);
-            if (GameBoard.getAI() == 0) {
-                if (board[8][0] == 0 && board[8][1] == 0) {
-                    if (board[0][1] == 0 && board[0][2] == 0 && board[0][3] == 0) {
-                        if (!attackVectorsWhite[0][2] && !attackVectorsWhite[0][3] && !attackVectorsWhite[0][4]) {
-                            pseudoLegalMoves[0][2] = true;
-                        }
+
+        if (GameBoard.getHuman() == 1) {
+            if (row == 0 && col == 4 && board[row][col] == -1) {
+                if (board[8][2] == 0 && board[0][1] == 0 && board[0][2] == 0 && board[0][3] == 0) { // queen side castling black, human playing white
+                    boolean[][] attackVectors = getAttackVectors(board, -1);
+                    if (!attackVectors[0][2] && !attackVectors[0][3] && !attackVectors[0][4]) {
+                        pseudoLegalMoves[0][2] = true;
                     }
                 }
-                if (board[8][1] == 0 && board[8][2] == 0) {
-                    if (board[0][5] == 0 && board[0][6] == 0) {
-                        if (!attackVectorsWhite[0][4] && !attackVectorsWhite[0][5] && !attackVectorsWhite[0][6]) {
-                            pseudoLegalMoves[0][6] = true;
-                        }
+                if (board[8][3] == 0 && board[0][5] == 0 && board[0][6] == 0) { // king side castling black, human playing white
+                    boolean[][] attackVectors = getAttackVectors(board, -1);
+                    if (!attackVectors[0][4] && !attackVectors[0][5] && !attackVectors[0][6]) {
+                        pseudoLegalMoves[0][6] = true;
                     }
                 }
-            } else {
-                if (board[8][3] == 0 && board[8][4] == 0) {
-                    if (board[7][1] == 0 && board[7][2] == 0) {
-                        if (!attackVectorsWhite[7][1] && !attackVectorsWhite[7][2] && !attackVectorsWhite[7][3]) {
-                            pseudoLegalMoves[7][1] = true;
-                        }
+            } else if (row == 7 && col == 4 && board[row][col] == 1) {
+                if (board[8][4] == 0 && board[7][1] == 0 && board[7][2] == 0 && board[7][3] == 0) { // queen side castling white, human playing white
+                    boolean[][] attackVectors = getAttackVectors(board, 1);
+                    if (!attackVectors[7][2] && !attackVectors[7][3] && !attackVectors[7][4]) {
+                        pseudoLegalMoves[7][2] = true;
                     }
                 }
-                if (board[8][4] == 0 && board[8][5] == 0) {
-                    if (board[7][4] == 0 && board[7][5] == 0 && board[7][6] == 0) {
-                        if (!attackVectorsWhite[7][3] && !attackVectorsWhite[7][4] && !attackVectorsWhite[7][5]) {
-                            pseudoLegalMoves[7][5] = true;
-                        }
+                if (board[8][5] == 0 && board[7][5] == 0 && board[7][6] == 0) { // king side castling white, human playing white
+                    boolean[][] attackVectors = getAttackVectors(board, 1);
+                    if (!attackVectors[7][4] && !attackVectors[7][5] && !attackVectors[7][6]) {
+                        pseudoLegalMoves[7][6] = true;
                     }
                 }
             }
-        }
-
-        if (board[row][col] == 1) {
-            boolean[][] attackVectorsBlack = getAttackVectors(board, 1);
-            if (GameBoard.getAI() == 0) {
-                if (board[8][3] == 0 && board[8][4] == 0) {
-                    if (board[7][1] == 0 && board[7][2] == 0 && board[7][3] == 0) {
-                        if (!attackVectorsBlack[7][2] && !attackVectorsBlack[7][3] && !attackVectorsBlack[7][4]) {
-                            pseudoLegalMoves[7][2] = true;
-                        }
+        } else {
+            if (row == 0 && col == 3 && board[row][col] == 1) {
+                if (board[8][2] == 0 && board[0][1] == 0 && board[0][2] == 0) { // king side castling white, human playing black
+                    boolean[][] attackVectors = getAttackVectors(board, 1);
+                    if (!attackVectors[0][1] && !attackVectors[0][2] && !attackVectors[0][3]) {
+                        pseudoLegalMoves[0][1] = true;
                     }
                 }
-                if (board[8][4] == 0 && board[8][5] == 0) {
-                    if (board[7][5] == 0 && board[7][6] == 0) {
-                        if (!attackVectorsBlack[7][4] && !attackVectorsBlack[7][5] && !attackVectorsBlack[7][6]) {
-                            pseudoLegalMoves[7][6] = true;
-                        }
+                if (board[8][3] == 0 && board[0][4] == 0 && board[0][5] == 0 && board[0][6] == 0) { // queen side castling white, human playing black
+                    boolean[][] attackVectors = getAttackVectors(board, 1);
+                    if (!attackVectors[0][3] && !attackVectors[0][4] && !attackVectors[0][5]) {
+                        pseudoLegalMoves[0][5] = true;
                     }
                 }
-            } else {
-                if (board[8][0] == 0 && board[8][1] == 0) {
-                    if (board[0][1] == 0 && board[0][2] == 0) {
-                        if (!attackVectorsBlack[0][1] && !attackVectorsBlack[0][2] && !attackVectorsBlack[0][3]) {
-                            pseudoLegalMoves[0][1] = true;
-                        }
+            } else if (row == 7 && col == 3 && board[row][col] == -1) {
+                if (board[8][4] == 0 && board[7][1] == 0 && board[7][2] == 0) { // king side castling black, human playing black
+                    boolean[][] attackVectors = getAttackVectors(board, -1);
+                    if (!attackVectors[7][1] && !attackVectors[7][2] && !attackVectors[7][3]) {
+                        pseudoLegalMoves[7][1] = true;
                     }
                 }
-                if (board[8][1] == 0 && board[8][2] == 0) {
-                    if (board[0][4] == 0 && board[0][5] == 0 && board[0][6] == 0) {
-                        if (!attackVectorsBlack[0][3] && !attackVectorsBlack[0][4] && !attackVectorsBlack[0][5]) {
-                            pseudoLegalMoves[0][5] = true;
-                        }
+                if (board[8][5] == 0 && board[7][4] == 0 && board[7][5] == 0 && board[7][6] == 0) { // queen side castling black, human playing black
+                    boolean[][] attackVectors = getAttackVectors(board, -1);
+                    if (!attackVectors[7][3] && !attackVectors[7][4] && !attackVectors[7][5]) {
+                        pseudoLegalMoves[7][5] = true;
                     }
                 }
             }
@@ -150,80 +137,99 @@ public class King extends Piece {
         return pseudoLegalMoves;
     }
 
-    public static void updateCastlingHistory(byte[][] board, int fromRow, int fromCol) {
+    public static void updateCastlingHistory(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
 
-        if (fromRow == 0 && fromCol == 0) {
-            board[8][0] = 1;
-        } else if (fromRow == 0 && fromCol == 7) {
-            board[8][2] = 1;
-        } else if (fromRow == 7 && fromCol == 0) {
-            board[8][3] = 1;
-        } else if (fromRow == 7 && fromCol == 7) {
-            board[8][5] = 1;
-        }
-
-        if (GameBoard.getAI() == 0) {
-            if (fromRow == 0 && fromCol == 4) {
-                board[8][1] = 1;
-            } else if (fromRow == 7 && fromCol == 4) {
-                board[8][4] = 1;
+        if (Math.abs(board[toRow][toCol]) == 1 || Math.abs(board[toRow][toCol]) == 5) {
+            if (GameBoard.getHuman() == 1) {
+                if (board[8][2] == 0) { // queen side castling black, human playing white
+                    if ((fromRow == 0 && fromCol == 0 && board[toRow][toCol] == -5) || (fromRow == 0 && fromCol == 4 && board[toRow][toCol] == -1)) {
+                        board[8][2] = 1;
+                    }
+                }
+                if (board[8][3] == 0) { // king side castling black, human playing white
+                    if ((fromRow == 0 && fromCol == 7 && board[toRow][toCol] == -5) || (fromRow == 0 && fromCol == 4 && board[toRow][toCol] == -1)) {
+                        board[8][3] = 1;
+                    }
+                }
+                if (board[8][4] == 0) { // queen side castling white, human playing white
+                    if ((fromRow == 7 && fromCol == 0 && board[toRow][toCol] == 5) || (fromRow == 7 && fromCol == 4 && board[toRow][toCol] == 1)) {
+                        board[8][4] = 1;
+                    }
+                }
+                if (board[8][5] == 0) { // king side castling white, human playing white
+                    if ((fromRow == 7 && fromCol == 7 && board[toRow][toCol] == 5) || (fromRow == 7 && fromCol == 4 && board[toRow][toCol] == 1)) {
+                        board[8][5] = 1;
+                    }
+                }
+            } else {
+                if (board[8][2] == 0) { // king side castling white, human playing black
+                    if ((fromRow == 0 && fromCol == 0 && board[toRow][toCol] == 5) || (fromRow == 0 && fromCol == 3 && board[toRow][toCol] == 1)) {
+                        board[8][2] = 1;
+                    }
+                }
+                if (board[8][3] == 0) { // queen side castling white, human playing black
+                    if ((fromRow == 0 && fromCol == 7 && board[toRow][toCol] == 5) || (fromRow == 0 && fromCol == 3 && board[toRow][toCol] == 1)) {
+                        board[8][3] = 1;
+                    }
+                }
+                if (board[8][4] == 0) { // king side castling black, human playing black
+                    if ((fromRow == 7 && fromCol == 0 && board[toRow][toCol] == -5) || (fromRow == 0 && fromCol == 3 && board[toRow][toCol] == -1)) {
+                        board[8][4] = 1;
+                    }
+                }
+                if (board[8][5] == 0) { // queen side castling black, human playing black
+                    if ((fromRow == 7 && fromCol == 7 && board[toRow][toCol] == -5) || (fromRow == 0 && fromCol == 3 && board[toRow][toCol] == -1)) {
+                        board[8][5] = 1;
+                    }
+                }
             }
-        } else {
-            if (fromRow == 0 && fromCol == 3) {
-                board[8][1] = 1;
-            } else if (fromRow == 7 && fromCol == 3) {
-                board[8][4] = 1;
-            }
         }
-
     }
 
     public static void checkForCastling(byte[][] board, int fromRow, int fromCol, int toRow, int toCol) {
 
-        updateCastlingHistory(board, fromRow, fromCol);
-
-        int[] lastMove = {fromRow, fromCol, toRow, toCol};
-
         if (Math.abs(board[toRow][toCol]) == 1) {
-            if (GameBoard.getAI() == 0) {
-                int[] CastlingUpperLong = {0, 4, 0, 2};
-                int[] CastlingUpperShort = {0, 4, 0, 6};
-                int[] CastlingLowerLong = {7, 4, 7, 2};
-                int[] CastlingLowerShort = {7, 4, 7, 6};
-                if (Arrays.equals(lastMove, CastlingUpperLong) && board[8][0] == 0 && board[8][1] == 0) {
+            if (GameBoard.getHuman() == 1) {
+                if (fromRow == 0 && fromCol == 4 && toRow == 0 && toCol == 2){ // queen side castling black, human playing white
                     board[0][0] = 0;
                     board[0][3] = -5;
-                } else if (Arrays.equals(lastMove, CastlingUpperShort) && board[8][1] == 0 && board[8][2] == 0) {
+                }
+                if (fromRow == 0 && fromCol == 4 && toRow == 0 && toCol == 6){ // king side castling black, human playing white
                     board[0][7] = 0;
                     board[0][5] = -5;
-                } else if (Arrays.equals(lastMove, CastlingLowerLong) && board[8][3] == 0 && board[8][4] == 0) {
+                }
+                if (fromRow == 7 && fromCol == 4 && toRow == 7 && toCol == 2){ // queen side castling white, human playing white
                     board[7][0] = 0;
                     board[7][3] = 5;
-                } else if (Arrays.equals(lastMove, CastlingLowerShort) && board[8][4] == 0 && board[8][5] == 0) {
+                }
+                if (fromRow == 7 && fromCol == 4 && toRow == 7 && toCol == 6){ // king side castling white, human playing white
                     board[7][7] = 0;
                     board[7][5] = 5;
                 }
-            } else {
-                int[] CastlingUpperShort = {0, 3, 0, 1};
-                int[] CastlingUpperLong = {0, 3, 0, 5};
-                int[] CastlingLowerShort = {7, 3, 7, 1};
-                int[] CastlingLowerLong = {7, 3, 7, 5};
-                if (Arrays.equals(lastMove, CastlingUpperShort) && board[8][0] == 0 && board[8][1] == 0) {
+            }
+            else {
+                if (fromRow == 0 && fromCol == 3 && toRow == 0 && toCol == 1){ // king side castling white, human playing black
                     board[0][0] = 0;
                     board[0][2] = 5;
-                } else if (Arrays.equals(lastMove, CastlingUpperLong) && board[8][1] == 0 && board[8][2] == 0) {
+                }
+                if (fromRow == 0 && fromCol == 3 && toRow == 0 && toCol == 5){ // queen side castling white, human playing black
                     board[0][7] = 0;
                     board[0][4] = 5;
-                } else if (Arrays.equals(lastMove, CastlingLowerShort) && board[8][3] == 0 && board[8][4] == 0) {
+                }
+                if (fromRow == 7 && fromCol == 3 && toRow == 7 && toCol == 1){ // king side castling black, human playing black
                     board[7][0] = 0;
-                    board[7][2] = -5;
-                } else if (Arrays.equals(lastMove, CastlingLowerLong) && board[8][4] == 0 && board[8][5] == 0) {
+                    board[7][4] = -5;
+                }
+                if (fromRow == 7 && fromCol == 3 && toRow == 7 && toCol == 5){ // queen side castling black, human playing black
                     board[7][7] = 0;
                     board[7][4] = -5;
                 }
             }
         }
 
+        updateCastlingHistory(board, fromRow, fromCol, toRow, toCol);
     }
 
 }
+
+

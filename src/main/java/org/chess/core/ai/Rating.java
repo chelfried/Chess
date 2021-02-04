@@ -71,7 +71,7 @@ public class Rating {
             {-30, -40, -40, -50, -50, -40, -40, -30}
     };
 
-    public static int calcRating(byte[][] board, int depth) {
+    public static int calcRating(byte[][] board, int totalMoves, int depth) {
 
         int rating = 0;
 
@@ -95,16 +95,16 @@ public class Rating {
                 } else if (piece == 4) {
                     rating += calcPositional(knightTable, row, col, board[row][col]);
                     if (board[row][col] > 0) {
-                        rating += 300;
+                        rating += 320;
                     } else {
-                        rating -= 300;
+                        rating -= 320;
                     }
                 } else if (piece == 3) {
                     rating += calcPositional(bishopTable, row, col, board[row][col]);
                     if (board[row][col] > 0) {
-                        rating += 300;
+                        rating += 330;
                     } else {
-                        rating -= 300;
+                        rating -= 330;
                     }
                 } else if (piece == 2) {
                     rating += calcPositional(queenTable, row, col, board[row][col]);
@@ -119,13 +119,15 @@ public class Rating {
             }
         }
 
-//        if (getAllLegalMovesFor(board, getHuman()).size() == 0 && checkForMate(board)) {
-//            if (depth == 0) {
-//                rating -= 1000000;
-//            } else {
-//                rating -= 1000000 / depth;
-//            }
-//        }
+        if (totalMoves == 0) {
+            if (checkForMate(board)) {
+                if (depth == 0) {
+                    rating -= 1000000;
+                } else {
+                    rating -= 1000000 / depth;
+                }
+            }
+        }
 
         return rating;
     }

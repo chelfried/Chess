@@ -2,7 +2,7 @@ package org.chess.core.pieces;
 
 import static org.chess.core.GameBoard.*;
 
-public class Pawn extends Piece {
+public class Pawn extends _Piece {
 
     public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
 
@@ -93,21 +93,27 @@ public class Pawn extends Piece {
     public static void checkForPromotion(byte[][] board) {
         for (int i = 0; i < 8; i++) {
             if (board[0][i] == 6 || board[7][i] == 6) {
-                if (board == getActiveBoard() && getHuman() == 1) {
+                if (getHuman() == turn && board == getActiveBoard()) {
                     setWhitePromoting(true);
-                } else if (getAI() == 1) {
-                    setWhitePromoting(true);
-                    promotePawn(board, 2);
-                    turn = 1 - turn;
+                } else {
+                    if (board[0][i] == 6){
+                        board[0][i] = 2;
+                    }
+                    if (board[7][i] == 6){
+                        board[7][i] = 2;
+                    }
                 }
             }
             if (board[0][i] == -6 || board[7][i] == -6) {
-                if (board == getActiveBoard() && getHuman() == 0) {
+                if (getHuman() == turn && board == getActiveBoard()) {
                     setBlackPromoting(true);
-                } else if (getAI() == 0) {
-                    setBlackPromoting(true);
-                    promotePawn(board, -2);
-                    turn = 1 - turn;
+                } else {
+                    if (board[0][i] == -6){
+                        board[0][i] = -2;
+                    }
+                    if (board[7][i] == -6){
+                        board[7][i] = -2;
+                    }
                 }
             }
         }
@@ -125,6 +131,7 @@ public class Pawn extends Piece {
             setWhitePromoting(false);
             setBlackPromoting(false);
             turn = 1 - turn;
+            moveByAI();
         }
     }
 

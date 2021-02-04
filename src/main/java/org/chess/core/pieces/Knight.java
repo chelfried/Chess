@@ -1,6 +1,6 @@
 package org.chess.core.pieces;
 
-public class Knight extends Piece{
+public class Knight extends _Piece {
 
     public static boolean[][] calcPseudo(byte[][] board, int row, int col) {
 

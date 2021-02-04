@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.chess.core.GameBoard.*;
-import static org.chess.core.pieces.Piece.calcPseudo;
+import static org.chess.core.pieces._Piece.calcPseudo;
 
 public class MoveGenerator {
 

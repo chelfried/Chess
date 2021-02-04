@@ -45,19 +45,8 @@ public class GameBoard {
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {6, 6, 6, 6, 6, 6, 6, 6},
                     {5, 4, 3, 2, 1, 3, 4, 5},
-                    {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
+                    {0, 0, 0, 0, 0, 0, 0, 0} // index 2-5: castling, index 6-7: en passant
             };
-//            activeBoard = new byte[][]{
-//                    {-5, 0, 0, 0, -1, 0, 0, -5},
-//                    {-6, -6, -6, -6, -6, -6, -6, -6},
-//                    {0, 0, 0, 0, 0, 0, 0, 0},
-//                    {1, 0, 0, 6, 0, 0, 0, -5},
-//                    {0, 0, 0, 0, 0, 0, 0, 0},
-//                    {0, 0, 0, 0, 0, 0, 0, 0},
-//                    {6, 6, 6, 0, 6, 6, 6, 6},
-//                    {5, 0, 0, 0, 0, 0, 0, 5},
-//                    {0, 0, 0, 0, 0, 0, 0, 0}
-//            };
         } else if (human == 0) {
             activeBoard = new byte[][]{
                     {5, 4, 3, 1, 2, 3, 4, 5},
@@ -68,7 +57,7 @@ public class GameBoard {
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {-6, -6, -6, -6, -6, -6, -6, -6},
                     {-5, -4, -3, -1, -2, -3, -4, -5},
-                    {0, 0, 0, 0, 0, 0, 0, 0} // index 0-5: castling, index 6-7: en passant
+                    {0, 0, 0, 0, 0, 0, 0, 0} // index 2-5: castling, index 6-7: en passant
             };
         }
         selectedRow = null;
@@ -110,7 +99,7 @@ public class GameBoard {
                         legalMoves = calcLegal(activeBoard, row, col);
                     }
                 } else {
-                    checkMove(selectedRow, selectedCol, row, col);
+                    moveByHuman(selectedRow, selectedCol, row, col);
                 }
 
             }
@@ -133,15 +122,15 @@ public class GameBoard {
         legalMoves = new boolean[8][8];
     }
 
-    private static void checkMove(int fromRow, int fromCol, int toRow, int toCol) {
+    private static void moveByHuman(int fromRow, int fromCol, int toRow, int toCol) {
         if (legalMoves[toRow][toCol]) {
             movePiece(activeBoard, fromRow, fromCol, toRow, toCol);
             resetSelection();
+            resetLegalMoves();
             if (!whitePromoting && !blackPromoting) {
                 turn = 1 - turn;
+                moveByAI();
             }
-            resetLegalMoves();
-            moveByAI();
         }
     }
 
@@ -203,42 +192,46 @@ public class GameBoard {
         int whiteKingCol = 0;
         boolean whiteCanMove = false;
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (board[i][j] > 0) {
-                    if (canMove(board, i, j)) {
-                        whiteCanMove = true;
-                    }
-                    if (board[i][j] == 1) {
-                        whiteKingRow = i;
-                        whiteKingCol = j;
+        if (board != null) {
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (board[i][j] > 0) {
+                        if (canMove(board, i, j)) {
+                            whiteCanMove = true;
+                        }
+                        if (board[i][j] == 1) {
+                            whiteKingRow = i;
+                            whiteKingCol = j;
+                        }
                     }
                 }
             }
-        }
-        if (getAttackVectors(board, 1)[whiteKingRow][whiteKingCol] && !whiteCanMove) {
-            return true;
-        }
+            if (!whiteCanMove && getAttackVectors(board, 1)[whiteKingRow][whiteKingCol]) {
+                return true;
+            }
 
-        int blackKingRow = 0;
-        int blackKingCol = 0;
-        boolean blackCanMove = false;
+            int blackKingRow = 0;
+            int blackKingCol = 0;
+            boolean blackCanMove = false;
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (board[i][j] < 0) {
-                    if (canMove(board, i, j)) {
-                        blackCanMove = true;
-                    }
-                    if (board[i][j] == -1) {
-                        blackKingRow = i;
-                        blackKingCol = j;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (board[i][j] < 0) {
+                        if (canMove(board, i, j)) {
+                            blackCanMove = true;
+                        }
+                        if (board[i][j] == -1) {
+                            blackKingRow = i;
+                            blackKingCol = j;
+                        }
                     }
                 }
             }
-        }
+            return !blackCanMove && getAttackVectors(board, -1)[blackKingRow][blackKingCol];
 
-        return getAttackVectors(board, -1)[blackKingRow][blackKingCol] && !blackCanMove;
+        }
+        return false;
     }
 
     public static void resetGame() {
