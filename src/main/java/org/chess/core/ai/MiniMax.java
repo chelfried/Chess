@@ -9,13 +9,13 @@ import static org.chess.core.MoveGenerator.deepCopyBoard;
 import static org.chess.core.MoveGenerator.getAllLegalMovesFor;
 import static org.chess.core.ai.Rating.calcRating;
 
-public class MiniMax extends _Interface{
+public class MiniMax extends _Interface {
 
-        static int max(byte[][] board, int currentDepth) {
+    static int max(byte[][] board, int currentDepth) {
 
         if (currentDepth == searchToDepth) {
             leafNodesEvaluated++;
-            return calcRating(board, 0, currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board) * (getAI() * 2 - 1);
         }
 
         List<Move> moves = getAllLegalMovesFor(board, getAI());
@@ -49,7 +49,7 @@ public class MiniMax extends _Interface{
 
         if (currentDepth == searchToDepth) {
             leafNodesEvaluated++;
-            return calcRating(board, 0, currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board) * (getAI() * 2 - 1);
         }
 
         List<Move> moves = getAllLegalMovesFor(board, getHuman());

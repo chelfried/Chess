@@ -6,19 +6,26 @@ import java.util.List;
 
 import static org.chess.core.GameBoard.*;
 import static org.chess.core.MoveGenerator.*;
+import static org.chess.core.ai.MoveSorting.sortMoves;
 import static org.chess.core.ai.Rating.calcRating;
 
 public class AlphaBeta extends _Interface {
 
-    public static int alphaBetaMax(byte[][] board, List<Move> moves, int alpha, int beta, int currentDepth) {
+    public static int alphaBetaMax(byte[][] board, int alpha, int beta, int currentDepth) {
 
         if (currentDepth == searchToDepth) {
             leafNodesEvaluated++;
-            return calcRating(board, moves.size(), currentDepth) * (getHuman() * 2 - 1);
+            return calcRating(board) * (getAI() * 2 - 1);
         }
 
+        List<Move> moves = sortMoves(deepCopyBoard(board), getAllLegalMovesFor(board, getAI()), getAI());
+
         if (moves.size() == 0) {
-            return calcRating(board, 0, currentDepth) * (getHuman() * 2 - 1);
+            if (checkForMate(board)){
+                return Integer.MIN_VALUE / (currentDepth + 1);
+            } else {
+                return calcRating(board) * (getAI() * 2 - 1);
+            }
         }
 
         for (Move move : moves) {
@@ -27,9 +34,7 @@ public class AlphaBeta extends _Interface {
 
             movePiece(tempBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
 
-            List<Move> moveList = MoveSorting.sortMoves(tempBoard, getAllLegalMovesFor(tempBoard, getHuman()), getHuman());
-
-            int score = alphaBetaMin(tempBoard, moveList, alpha, beta, currentDepth + 1);
+            int score = alphaBetaMin(tempBoard, alpha, beta, currentDepth + 1);
 
             if (score >= beta) {
                 return beta;
@@ -52,15 +57,21 @@ public class AlphaBeta extends _Interface {
         return alpha;
     }
 
-    public static int alphaBetaMin(byte[][] board, List<Move> moves, int alpha, int beta, int currentDepth) {
+    public static int alphaBetaMin(byte[][] board, int alpha, int beta, int currentDepth) {
 
         if (currentDepth == searchToDepth) {
             leafNodesEvaluated++;
-            return calcRating(board, moves.size(), currentDepth) * (getAI() * 2 - 1);
+            return calcRating(board) * (getAI() * 2 - 1);
         }
 
+        List<Move> moves = sortMoves(deepCopyBoard(board), getAllLegalMovesFor(board, getHuman()), getHuman());
+
         if (moves.size() == 0) {
-            return calcRating(board, 0, currentDepth) * (getAI() * 2 - 1);
+            if (checkForMate(board)){
+                return Integer.MAX_VALUE / (currentDepth + 1);
+            } else {
+                return calcRating(board) * (getAI() * 2 - 1);
+            }
         }
 
         for (Move move : moves) {
@@ -69,9 +80,7 @@ public class AlphaBeta extends _Interface {
 
             movePiece(tempBoard, move.fromRow, move.fromCol, move.toRow, move.toCol);
 
-            List<Move> moveList = MoveSorting.sortMoves(tempBoard, getAllLegalMovesFor(tempBoard, getAI()), getAI());
-
-            int score = alphaBetaMax(tempBoard, moveList, alpha, beta, currentDepth + 1);
+            int score = alphaBetaMax(tempBoard, alpha, beta, currentDepth + 1);
 
             if (score <= alpha) {
                 return alpha;

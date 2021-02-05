@@ -1,7 +1,8 @@
 package org.chess.core.ai;
 
+import org.chess.core.MoveGenerator;
+
 import static org.chess.core.GameBoard.*;
-import static org.chess.core.MoveGenerator.*;
 
 public class Rating {
 
@@ -71,7 +72,7 @@ public class Rating {
             {-30, -40, -40, -50, -50, -40, -40, -30}
     };
 
-    public static int calcRating(byte[][] board, int totalMoves, int depth) {
+    public static int calcRating(byte[][] board) {
 
         int rating = 0;
 
@@ -115,16 +116,6 @@ public class Rating {
                     }
                 } else if (piece == 1) {
                     rating += calcPositional(kingTable, row, col, board[row][col]);
-                }
-            }
-        }
-
-        if (totalMoves == 0) {
-            if (checkForMate(board)) {
-                if (depth == 0) {
-                    rating -= 1000000;
-                } else {
-                    rating -= 1000000 / depth;
                 }
             }
         }
